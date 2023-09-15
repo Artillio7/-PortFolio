@@ -111,6 +111,7 @@ h1, h2, h3 {
     animation: imageFadeIn 1.5s ease-out forwards;
 }
 
+
 @keyframes pulseAnimation {
     0% {
         transform: scale(1);
@@ -122,6 +123,7 @@ h1, h2, h3 {
         transform: scale(1);
     }
 }
+
 .continuous-animation {
     animation: pulseAnimation 2s infinite;
 }
@@ -166,4 +168,7 @@ h1, h2, h3 {
 
 .modal-footer {
     border-top: none;
+}
+#accueil img.continuous-animation {
+    animation: pulseAnimation 2s infinite;
 }

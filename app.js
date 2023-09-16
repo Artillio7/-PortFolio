@@ -14,3 +14,14 @@ descriptionButtons.forEach(button => {
 });
 
  
+
+AOS.init();
+
+document.querySelector('.navbar-toggler').addEventListener('click', function() {
+    var icon = this.querySelector('.navbar-toggler-icon');
+    if (icon.classList.contains('active')) {
+        icon.classList.remove('active');
+    } else {
+        icon.classList.add('active');
+    }
+});

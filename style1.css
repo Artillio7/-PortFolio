@@ -77,33 +77,6 @@ body {
     line-height: 1.6;
 }
 
-
-/* Positionnement central */
-.center-div {
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* Image de profil */
-.profile-pic {
-    width: 9rem;  /* Réduire la taille du cercle */
-    height: 9rem;
-    background-color: #ccc;
-    overflow: hidden;
-}
-
-.profile-pic img {
-    object-fit: cover;
-    object-position: center;  /* Centrer l'image à l'intérieur du cercle */
-    width: 100%;
-    height: 100%;
-}
-.position-absolute.center-div {
-    top: 72%;  /* Ajustez cette valeur selon la distance souhaitée */
-}
-
-
 h1, h2, h3 {
     font-weight: 300;
 }
@@ -249,67 +222,6 @@ body {
 }
 
 .presentation {
-    margin-top: 50px; /* Décale la div vers le bas */
-    max-height: 650px; /* Réduit la hauteur de la div */
-}
-
-.presentation-container {
-    background-color: #1c1c1c; /* Couleur d'arrière-plan plus foncée pour un meilleur contraste */
-}
-
-.presentation-container h2, .presentation-container p {
-    color: #e0e0e0; /* Une nuance de gris plus claire pour le texte pour améliorer la lisibilité */
-}
-
-.presentation-container {
-    display: flex;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #f7f9fc;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.professional, .personal {
-    flex: 1;
-    margin: 0 10px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
-}
-
-.professional:hover, .personal:hover {
-    transform: translateY(-10px);
-}
-
-
-.presentation-container {
-    background-color: #2c2c2c; /* Dark gray background for better contrast with white text */
-    padding: 40px 0; /* Reduced padding to make the section smaller */
-    margin: 50px 0; /* Margin added to space out from surrounding elements */
-    border-radius: 15px; /* Rounded corners for aesthetic appeal */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Shadow for depth */
-}
-
-.presentation-container h2 {
-    color: #ffffff; /* White color for headings */
-    font-size: 24px; /* Increased font size for better readability */
-    margin-bottom: 20px; /* Spacing between heading and paragraph */
-}
-
-.presentation-container p {
-    color: #bdbdbd; /* Light gray color for paragraphs */
-    font-size: 16px; /* Font size for better readability */
-}
-
-.presentation-container .professional, 
-.presentation-container .personal {
-    padding: 20px; /* Padding inside each frame */
-    background-color: rgba(255,255,255,0.05); /* Slight white background to distinguish the frames */
-    border-radius: 10px; /* Rounded corners for aesthetic appeal */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Shadow for depth */
+    max-height: 700px;  /* Adjust this value based on your preference */
+    overflow: hidden;  /* Ensures content exceeding the max-height is hidden */
 }

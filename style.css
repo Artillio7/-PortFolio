@@ -105,7 +105,7 @@ body {
 /* Pour les petits écrans */
 @media (max-width: 767.98px) {  
     .custom-translate {
-        transform:  translateY(15%) translateX(-50%);  /* Ajustez ces valeurs selon vos besoins translateY(5%)*/
+        transform:  translateY(30%) translateX(-50%);  /* Ajustez ces valeurs selon vos besoins translateY(5%)*/
     }
 }
 

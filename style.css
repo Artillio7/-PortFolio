@@ -10,11 +10,14 @@ body {
 .img-fluid rounded-circle {
     width: 10px;
     height: 20px;
+    z-index: 1000;
+    
 }
 
 .img-fluid {
     max-width: 100%;
     height: auto;
+    z-index: 1000;
 }
 .btn:hover {
     transform: scale(1.05);
@@ -105,7 +108,8 @@ body {
 /* Pour les petits écrans */
 @media (max-width: 767.98px) {  
     .custom-translate {
-        transform:  translateY(70%) translateX(-50%);  /* Ajustez ces valeurs selon vos besoins translateY(5%)*/
+        z-index: 1000;
+        transform:  translateY(-50%) translateX(-50%);  /* Ajustez ces valeurs selon vos besoins translateY(5%)*/
     }
 }
 

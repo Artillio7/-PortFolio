@@ -1,7 +1,7 @@
 const toggler = document.querySelector(".hamburger");
 const navLinksContainer = document.querySelector(".navlinks-container");
 
-const toggleNav = e => {
+const toggleNav = (e) => {
   // Animation du bouton
   toggler.classList.toggle("open");
 
@@ -15,22 +15,21 @@ const toggleNav = e => {
 
 toggler.addEventListener("click", toggleNav);
 
-
-new ResizeObserver(entries => {
-  if (entries[0].contentRect.width <= 900){
+new ResizeObserver((entries) => {
+  if (entries[0].contentRect.width <= 900) {
     navLinksContainer.style.transition = "transform 0.4s ease-out";
   } else {
     navLinksContainer.style.transition = "none";
   }
-}).observe(document.body)
- 
-const descriptionButtons = document.querySelectorAll('[data-toggle="modal"]');
-descriptionButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const description = this.closest('.card-body').querySelector('.collapse').textContent;
-        document.querySelector('.modal-body').textContent = description;
-    });
-});
+}).observe(document.body);
 
+const descriptionButtons = document.querySelectorAll('[data-toggle="modal"]');
+descriptionButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    const description =
+      this.closest(".card-body").querySelector(".collapse").textContent;
+    document.querySelector(".modal-body").textContent = description;
+  });
+});
 
 AOS.init();

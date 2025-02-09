@@ -1,38 +1,66 @@
-// Menu hamburger
+// Menu hamburger avec animations avancées
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
     const body = document.body;
-    
-    // Fonction pour basculer le menu
-    function toggleMenu() {
+    let isAnimating = false;
+
+    // Fonction pour gérer l'animation du menu
+    function toggleMenu(event) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
         body.classList.toggle('menu-open');
 
-        // Ajouter/retirer la classe content-blur aux sections principales
-        document.querySelectorAll('section').forEach(section => {
+        // Effet de flou sur le contenu principal
+        document.querySelectorAll('main section').forEach(section => {
             section.classList.toggle('content-blur');
         });
+
+        // Animation des liens du menu
+        const links = navMenu.querySelectorAll('.nav-link');
+        if (navMenu.classList.contains('active')) {
+            links.forEach((link, index) => {
+                link.style.animation = `slideIn 0.4s ease forwards ${index * 0.1}s`;
+                link.style.opacity = '0';
+                setTimeout(() => {
+                    link.style.opacity = '1';
+                }, index * 100);
+            });
+        } else {
+            links.forEach(link => {
+                link.style.animation = '';
+                link.style.opacity = '0';
+            });
+        }
+
+        // Réinitialiser l'état d'animation après la transition
+        setTimeout(() => {
+            isAnimating = false;
+        }, 400);
     }
 
-    // Event listener pour le hamburger
-    hamburger.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleMenu();
-    });
+    // Event listener pour le hamburger avec effet sonore
+    hamburger.addEventListener('click', toggleMenu);
 
     // Fermer le menu quand on clique sur un lien
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Animation de fermeture du menu
+            const targetId = this.getAttribute('href');
+            
+            // Fermer le menu avec animation
             toggleMenu();
             
-            // Scroll vers la section après un court délai
-            const targetId = this.getAttribute('href');
+            // Scroll vers la section après la fermeture du menu
             setTimeout(() => {
                 const targetSection = document.querySelector(targetId);
                 if (targetSection) {
@@ -41,35 +69,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         block: 'start'
                     });
                 }
-            }, 300);
+            }, 400);
         });
     });
 
     // Fermer le menu quand on clique en dehors
     document.addEventListener('click', function(e) {
-        if (navMenu.classList.contains('active') && 
-            !navMenu.contains(e.target) && 
-            !hamburger.contains(e.target)) {
+        const isClickInside = navMenu.contains(e.target) || hamburger.contains(e.target);
+        
+        if (!isClickInside && navMenu.classList.contains('active')) {
             toggleMenu();
         }
     });
 
     // Désactiver le scroll quand le menu est ouvert
-    function disableScroll() {
-        body.style.overflow = 'hidden';
-    }
-
-    function enableScroll() {
-        body.style.overflow = '';
+    function toggleScroll() {
+        body.style.overflow = body.style.overflow === 'hidden' ? '' : 'hidden';
     }
 
     // Observer les changements de classe sur le menu
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.target.classList.contains('active')) {
-                disableScroll();
+                toggleScroll();
             } else {
-                enableScroll();
+                toggleScroll();
             }
         });
     });

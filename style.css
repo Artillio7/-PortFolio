@@ -425,6 +425,108 @@ body.menu-open .content-blur {
     background: linear-gradient(90deg, var(--primary-color), transparent);
 }
 
+/* Styles pour les cartes avec rotation */
+.card-container {
+    perspective: 1000px;
+    height: 100%;
+    min-height: 400px;
+    margin-bottom: 2rem;
+}
+
+.card-flip {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.card-container:hover .card-flip {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.card-front {
+    z-index: 2;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background: rgba(10, 10, 10, 0.95);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.card-back .card-body {
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.card-back h4 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+}
+
+.card-back p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.card-back .btn-danger {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--text-light);
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+    margin-top: auto;
+}
+
+.card-back .btn-danger:hover {
+    background: rgba(74, 144, 226, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
+}
+
+/* Animation d'apparition du texte */
+.card-back .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-in forwards;
+    animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Description Animation */
 .card .collapse {
     height: 0;
@@ -683,7 +785,7 @@ body {
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 .animate-on-scroll.visible {
@@ -1547,32 +1649,90 @@ nav {
     text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
 }
 
-.glitch {
-    position: relative;
-    animation: glitch-skew 1s infinite linear alternate-reverse;
+/* Animation */
+@keyframes glitch-anim { /* Animation pour le glitch */ }
+@keyframes cyber-rotate { /* Animation pour la rotation */ }
+
+/* Styles pour les cartes avec rotation */
+.card-container {
+    perspective: 1000px;
+    height: 100%;
+    min-height: 400px;
 }
 
-.glitch::before,
-.glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
+.card-flip {
+    position: relative;
     width: 100%;
     height: 100%;
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
 }
 
-.glitch::before {
-    left: 2px;
-    text-shadow: -2px 0 #ff00c1;
-    animation: glitch-anim 2s infinite linear alternate-reverse;
+.card-container:hover .card-flip {
+    transform: rotateY(180deg);
 }
 
-.glitch::after {
-    left: -2px;
-    text-shadow: 2px 0 #4a90e2;
-    animation: glitch-anim2 2s infinite linear alternate-reverse;
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.95);
+}
+
+.card-back .card-body {
+    color: var(--text-light);
+    text-align: center;
+}
+
+.card-back h4 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.card-back p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Ajustements pour la face avant */
+.card-front {
+    z-index: 2;
+}
+
+.card-front .card-body {
+    background: transparent;
+}
+
+/* Animation d'apparition du texte */
+.card-back .fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
+    animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .cyber-box {
@@ -1931,7 +2091,7 @@ footer {
 .card .collapse {
     height: 0;
     opacity: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: height 0.4s ease, opacity 0.4s ease;
     overflow: hidden;
     color: var(--text-light);
     position: absolute;
@@ -2051,7 +2211,6 @@ footer {
         position: relative;
         width: 100%;
         left: 0;
-        transform: none;
     }
     
     .card .collapse.show {
@@ -2121,9 +2280,10 @@ footer {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, 
-        var(--primary-color), 
-        transparent, 
+    background: linear-gradient(
+        45deg,
+        var(--primary-color),
+        var(--secondary-color),
         var(--primary-color)
     );
     background-size: 200% 200%;
@@ -2136,6 +2296,7 @@ footer {
 
 .card:hover::before {
     opacity: 0.5;
+    animation: borderFlow 3s linear infinite;
 }
 
 @keyframes borderFlow {

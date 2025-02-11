@@ -240,12 +240,6 @@ body {
         transform: translateY(0);
     }
 
-    .nav-menu.active .nav-link:nth-child(1) { transition-delay: 0.1s; }
-    .nav-menu.active .nav-link:nth-child(2) { transition-delay: 0.2s; }
-    .nav-menu.active .nav-link:nth-child(3) { transition-delay: 0.3s; }
-    .nav-menu.active .nav-link:nth-child(4) { transition-delay: 0.4s; }
-    .nav-menu.active .nav-link:nth-child(5) { transition-delay: 0.5s; }
-
     .nav-link::before {
         content: '';
         position: absolute;
@@ -297,7 +291,7 @@ body.menu-open .content-blur {
     border-radius: 50%;
     border: 3px solid var(--primary-color);
     box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
-    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    transition: transform 0.5s ease;
     transform-origin: center;
     filter: brightness(0.9);
 }
@@ -356,6 +350,198 @@ body.menu-open .content-blur {
 
 .card:hover {
     transform: translateY(-5px);
+}
+
+/* Project Cards - Style Futuriste */
+.card {
+    position: relative;
+    height: 450px;
+    background: rgba(10, 10, 10, 0.3);
+    border: 1px solid rgba(74, 144, 226, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--primary-color), 
+        transparent 30%,
+        transparent 70%,
+        var(--secondary-color)
+    );
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card-body {
+    background: rgba(10, 10, 10, 0.8);
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card h4 {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.card h4::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), transparent);
+}
+
+/* Description Animation */
+.card .collapse {
+    height: 0;
+    opacity: 0;
+    transition: height 0.4s ease, opacity 0.4s ease;
+    overflow: hidden;
+    color: var(--text-light);
+    position: absolute;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(5px);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    width: 90%;
+    left: 5%;
+    transform: translateY(10px);
+}
+
+.card .collapse.show {
+    height: auto;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Boutons */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-danger, .btn-primary {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--text-light);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-danger::before, .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.3s ease;
+}
+
+.btn-danger:hover::before, .btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
+    transform: translateY(-2px);
+}
+
+.btn-primary:hover {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* Animation de scan */
+@keyframes scanline {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    filter: blur(1px);
+    animation: scanline 2s linear infinite;
+    animation-play-state: paused;
+}
+
+.card:hover::after {
+    opacity: 0.5;
+    animation-play-state: running;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card {
+        height: auto;
+        min-height: 400px;
+    }
+    
+    .card .collapse {
+        position: relative;
+        width: 100%;
+        left: 0;
+    }
 }
 
 /* Formulaire de contact */
@@ -793,6 +979,8 @@ h1, h2, h3 {
     );
     position: relative;
     overflow: hidden;
+    margin-top: 100px;
+    padding-top: 100px;
 }
 
 #contact::before {
@@ -1252,9 +1440,13 @@ nav {
 
 /* Section */
 #about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
     background: var(--bg-darker);
     position: relative;
     overflow: hidden;
+    padding: 100px 0;
 }
 
 #about::before {
@@ -1655,4 +1847,283 @@ footer {
     padding: 20px 0; /* Padding for the footer */
     background-color: #1a1a1a; /* Match the dark theme */
     position: relative; /* Ensure proper positioning */
+}
+
+/* Animations supplémentaires pour les cartes */
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 5px rgba(74, 144, 226, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(74, 144, 226, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(74, 144, 226, 0.2); }
+}
+
+@keyframes borderFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.card {
+    position: relative;
+    height: 450px;
+    background: rgba(10, 10, 10, 0.3);
+    border: 1px solid rgba(74, 144, 226, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.card.rotate {
+    transform: rotateY(180deg);
+    transition: transform 0.6s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    animation: glowPulse 2s infinite;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        var(--primary-color),
+        var(--secondary-color),
+        var(--primary-color)
+    );
+    background-size: 200% 200%;
+    animation: borderFlow 3s linear infinite;
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.card:hover::before {
+    opacity: 1;
+    animation: borderFlow 3s linear infinite;
+}
+
+/* Description Animation */
+.card .collapse {
+    height: 0;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    color: var(--text-light);
+    position: absolute;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(5px);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    width: 90%;
+    left: 5%;
+    transform: translateY(20px) scale(0.95);
+}
+
+.card .collapse.show {
+    height: auto;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Effet de scan actif */
+.card.scanning::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--primary-color),
+        var(--secondary-color),
+        transparent
+    );
+    top: 0;
+    left: 0;
+    opacity: 1;
+    filter: blur(1px);
+    animation: scanline 1.5s linear;
+}
+
+@keyframes scanline {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(500%);
+    }
+}
+
+/* Amélioration des boutons */
+.btn-primary, .btn-danger {
+    background: transparent;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-primary:hover, .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:hover {
+    background: rgba(74, 144, 226, 0.1);
+}
+
+.btn-danger:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Effet de brillance au survol des boutons */
+.btn-primary::before, .btn-danger::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+    );
+    z-index: -1;
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn-primary:hover::before, .btn-danger:hover::before {
+    transform: translateX(100%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        height: auto;
+        min-height: 400px;
+    }
+    
+    .card .collapse {
+        position: relative;
+        width: 100%;
+        left: 0;
+        transform: none;
+    }
+    
+    .card .collapse.show {
+        transform: none;
+    }
+}
+
+/* Styles des cartes de projet */
+.card {
+    position: relative;
+    height: 450px;
+    background: rgba(10, 10, 10, 0.3);
+    border: 1px solid rgba(74, 144, 226, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem;
+    backface-visibility: hidden;
+}
+
+/* Style de la description */
+.collapse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    padding: 2rem;
+    opacity: 0;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    transition: opacity 0.3s ease;
+    display: none;
+    color: var(--text-light);
+}
+
+.collapse.show {
+    display: block;
+    z-index: 2;
+}
+
+/* Animation au survol */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+}
+
+/* Effet de bordure animée */
+.card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--primary-color), 
+        transparent, 
+        var(--primary-color)
+    );
+    background-size: 200% 200%;
+    animation: borderFlow 3s linear infinite;
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.card:hover::before {
+    opacity: 0.5;
+}
+
+@keyframes borderFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }

@@ -3,102 +3,120 @@ document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
     const body = document.body;
-    let isAnimating = false;
+    let menuOpen = false;
 
-    // Fonction pour gérer l'animation du menu
-    function toggleMenu(event) {
-        if (isAnimating) return;
-        isAnimating = true;
-
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        body.classList.toggle('menu-open');
-
-        // Effet de flou sur le contenu principal
-        document.querySelectorAll('main section').forEach(section => {
-            section.classList.toggle('content-blur');
-        });
-
-        // Animation des liens du menu
-        const links = navMenu.querySelectorAll('.nav-link');
-        if (navMenu.classList.contains('active')) {
-            links.forEach((link, index) => {
-                link.style.animation = `slideIn 0.4s ease forwards ${index * 0.1}s`;
-                link.style.opacity = '0';
-                setTimeout(() => {
-                    link.style.opacity = '1';
-                }, index * 100);
-            });
-        } else {
-            links.forEach(link => {
-                link.style.animation = '';
-                link.style.opacity = '0';
-            });
-        }
-
-        // Réinitialiser l'état d'animation après la transition
-        setTimeout(() => {
-            isAnimating = false;
-        }, 400);
+    function openMenu() {
+        menuOpen = true;
+        hamburger.classList.add('active');
+        navMenu.classList.add('active');
+        body.style.overflow = 'hidden';
     }
 
-    // Event listener pour le hamburger avec effet sonore
-    hamburger.addEventListener('click', toggleMenu);
+    function closeMenu() {
+        menuOpen = false;
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        body.style.overflow = '';
+    }
+
+    // Event listener pour le hamburger - un seul clic
+    hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
 
     // Fermer le menu quand on clique sur un lien
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
             const targetId = this.getAttribute('href');
             
-            // Fermer le menu avec animation
-            toggleMenu();
+            closeMenu();
             
-            // Scroll vers la section après la fermeture du menu
-            setTimeout(() => {
-                const targetSection = document.querySelector(targetId);
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            }, 400);
+            // Scroll vers la section
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
     });
 
     // Fermer le menu quand on clique en dehors
     document.addEventListener('click', function(e) {
-        const isClickInside = navMenu.contains(e.target) || hamburger.contains(e.target);
-        
-        if (!isClickInside && navMenu.classList.contains('active')) {
-            toggleMenu();
+        if (menuOpen && !navMenu.contains(e.target)) {
+            closeMenu();
         }
     });
+});
 
-    // Désactiver le scroll quand le menu est ouvert
-    function toggleScroll() {
-        body.style.overflow = body.style.overflow === 'hidden' ? '' : 'hidden';
-    }
-
-    // Observer les changements de classe sur le menu
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.target.classList.contains('active')) {
-                toggleScroll();
-            } else {
-                toggleScroll();
-            }
-        });
+// Gestion des descriptions de projet
+document.addEventListener('DOMContentLoaded', function() {
+    const projectCards = document.querySelectorAll('.card');
+    
+    projectCards.forEach(card => {
+        const descriptionBtn = card.querySelector('.btn-primary');
+        const description = card.querySelector('.collapse');
+        
+        if (descriptionBtn && description) {
+            descriptionBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Ferme toutes les autres cartes
+                projectCards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        otherCard.classList.remove('flipped');
+                        const otherDescription = otherCard.querySelector('.collapse');
+                        if (otherDescription) {
+                            otherDescription.classList.remove('show');
+                            otherDescription.style.opacity = '0';
+                        }
+                    }
+                });
+                
+                // Gestion de la carte actuelle
+                card.classList.toggle('flipped');
+                
+                // Si la carte est retournée, affiche la description
+                if (card.classList.contains('flipped')) {
+                    description.classList.add('show');
+                    // Petit délai pour l'animation
+                    setTimeout(() => {
+                        description.style.opacity = '1';
+                    }, 150);
+                } else {
+                    description.style.opacity = '0';
+                    // Attend la fin de l'animation de fade out
+                    setTimeout(() => {
+                        description.classList.remove('show');
+                    }, 300);
+                }
+            });
+        }
     });
-
-    observer.observe(navMenu, { attributes: true, attributeFilter: ['class'] });
+    
+    // Ferme les descriptions si on clique en dehors
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.card')) {
+            projectCards.forEach(card => {
+                card.classList.remove('flipped');
+                const description = card.querySelector('.collapse');
+                if (description) {
+                    description.style.opacity = '0';
+                    setTimeout(() => {
+                        description.classList.remove('show');
+                    }, 300);
+                }
+            });
+        }
+    });
 });
 
 // Navbar Scroll Effect

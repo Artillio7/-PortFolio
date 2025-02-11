@@ -1,17 +1,22 @@
 export class AdvancedNavigation {
     constructor() {
-        this.navbar = document.querySelector('nav');
+        this.navbar = document.querySelector('.navbar');
         this.hamburger = document.querySelector('.hamburger');
-        this.navLinks = document.querySelector('.navlinks-container');
-        this.links = document.querySelectorAll('.navlinks-container a');
+        this.navMenu = document.querySelector('.nav-menu');
+        this.links = document.querySelectorAll('.nav-link');
+        this.isMenuOpen = false;
         this.lastScroll = 0;
         
         this.initializeNavigation();
     }
 
     initializeNavigation() {
-        // Gestion du menu hamburger
-        this.hamburger?.addEventListener('click', () => this.toggleMenu());
+        // Gestion du menu hamburger avec un simple clic
+        if (this.hamburger) {
+            this.hamburger.addEventListener('click', () => {
+                this.toggleMenu();
+            });
+        }
 
         // Gestion du scroll
         window.addEventListener('scroll', () => this.handleScroll());
@@ -26,11 +31,12 @@ export class AdvancedNavigation {
     }
 
     toggleMenu() {
+        this.isMenuOpen = !this.isMenuOpen;
         this.hamburger.classList.toggle('active');
-        this.navLinks.classList.toggle('active');
+        this.navMenu.classList.toggle('active');
         
         // Animation du menu
-        if (this.navLinks.classList.contains('active')) {
+        if (this.navMenu.classList.contains('active')) {
             this.animateMenuItems();
         }
     }
@@ -71,8 +77,8 @@ export class AdvancedNavigation {
         const targetSection = document.querySelector(targetId);
         if (!targetSection) return;
 
-        // Fermer le menu mobile si ouvert
-        if (this.hamburger.classList.contains('active')) {
+        // Fermer le menu mobile uniquement sur les petits écrans
+        if (window.innerWidth <= 768 && this.hamburger.classList.contains('active')) {
             this.toggleMenu();
         }
 

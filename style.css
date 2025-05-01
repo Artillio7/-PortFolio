@@ -2317,3 +2317,76 @@ footer {
 #contact {
     background: transparent;
 }
+
+.service-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.circular-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #222831;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  background: #fff;
+  margin: 0 auto 16px auto;
+  display: block;
+  transition:
+    transform 0.5s cubic-bezier(.23,1.02,.64,.97),
+    box-shadow 0.5s cubic-bezier(.23,1.02,.64,.97),
+    border-radius 0.5s cubic-bezier(.23,1.02,.64,.97),
+    z-index 0s;
+  z-index: 1;
+  position: relative;
+  overflow: hidden;
+}
+ 
+ 
+.circular-img:hover,
+.circular-img:focus {
+  transform: scale(2.2) translateY(-15px);
+  border-radius: 16px;    /* Passe de cercle à rectangle arrondi */
+  object-fit: contain;    /* Affiche toute l'image, même les coins */
+  background: #fff;
+  box-shadow: 0 12px 60px 16px rgba(74,144,226,0.30), 0 0 0 12px rgba(74,144,226,0.12);
+  z-index: 20;
+  border-color: #4a90e2;
+  cursor: pointer;
+}
+ 
+ /* Optionnel : effet de halo lumineux au hover */
+ .circular-img:hover::after {
+   content: '';
+   position: absolute;
+   top: -15px; left: -15px; right: -15px; bottom: -15px;
+   border-radius: 28px;
+   background: radial-gradient(rgba(74,144,226,0.16) 60%, transparent 100%);
+   pointer-events: none;
+   z-index: -1;
+ }
+
+ @media (max-width: 768px) {
+   .cyber-box {
+     padding: 1rem 0.5rem;
+     margin-bottom: 1.5rem;
+     width: 100%;
+     min-width: 0;
+     box-sizing: border-box;
+   }
+   .glitch-container {
+     font-size: 2rem !important;
+   }
+   .typing-text {
+     font-size: 1.1rem !important;
+     white-space: normal;
+     text-align: center;
+   }
+ }

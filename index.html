@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet"/>
-    <link href="style.css" rel="stylesheet"/>
+    <link href="styles/style.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="icon" href="/ressources/logo.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -51,11 +51,11 @@
     <!-- Portfolio -->
     <div class="py-5" id="portfolio">
         <h2 class="text-center mb-5 text-uppercase fade-in" data-aos="fade-up">Portfolio</h2>
-        <div class="container">
+        <div class="container py-5">
         <div class="row">
         <!-- Card 1 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/ReactTwitch.png"/>
@@ -82,7 +82,7 @@
         </div>
         <!-- Card 2 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/animation.jpg"/>
@@ -109,7 +109,7 @@
         </div>
         <!-- Card 3 - Portfolio -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/SiteMenu.png"/>
@@ -136,7 +136,7 @@
         </div>
         <!-- Card 4 - Météo App -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/MeteoApp.png"/>
@@ -163,7 +163,7 @@
         </div>
         <!-- Card 5 - Grid CSS -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/grid.jpg"/>
@@ -190,7 +190,7 @@
         </div>
         <!-- Card 6 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/SiteResPic.jpg"/>
@@ -217,7 +217,7 @@
         </div>
         <!-- Card 7 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/Visu.jpg"/>
@@ -244,7 +244,7 @@
         </div>
         <!-- Card 8 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/js.jpg"/>
@@ -271,7 +271,7 @@
         </div>
         <!-- Card 9 -->
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card-container">
+            <div class="card-container mb-3">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
                         <img alt="Card image" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/bulma.jpg"/>
@@ -512,7 +512,7 @@
                 const animations = new AdvancedAnimations();
             });
         </script>
-        <script src="app.js"></script>
+        <script src="modules/app.js"></script>
         <script>
             // Ajout de la logique de rotation pour les cartes de projet
             const projectCards = document.querySelectorAll('.card');
@@ -527,5 +527,9 @@
                 });
             });
         </script>
-        </body>
-        </html>
+    </div>
+    <!-- Elfsight AI Chatbot | Artillio AI -->
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <div class="elfsight-app-7c4b7de4-84c5-42b4-b773-c1ce0e1b67c1" data-elfsight-app-lazy></div>
+</body>
+</html>

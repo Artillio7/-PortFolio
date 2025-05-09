@@ -3,14 +3,19 @@
   <url>
     <loc>https://digitillio.netlify.app/</loc>
     <lastmod>2025-05-09</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://digitillio.netlify.app/ressources/logo.png</image:loc>
+      <image:title>Artillio Yepmo - Portfolio</image:title>
+      <image:caption>Logo du portfolio d'Artillio Yepmo</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://digitillio.netlify.app/#portfolio</loc>
     <lastmod>2025-05-09</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://digitillio.netlify.app/#about</loc>
@@ -28,6 +33,6 @@
     <loc>https://digitillio.netlify.app/#contact</loc>
     <lastmod>2025-05-09</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 </urlset>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://artillio-portfolio.netlify.app/sitemap.xml
+Sitemap: https://digitillio.netlify.app/sitemap.xml

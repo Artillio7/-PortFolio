@@ -92,6 +92,75 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Mobile Menu */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, rgba(10, 10, 10, 0.97) 0%, rgba(20, 20, 20, 0.98) 100%);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+        gap: 2rem;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-link {
+        font-size: 1.5rem;
+        position: relative;
+        padding: 0.5rem 2rem;
+        margin: 0.5rem 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+    }
+
+    .nav-menu.active .nav-link {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary-color);
+        transform: translateY(-50%);
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+        width: 1.5rem;
+    }
+
+    .nav-link::after {
+        display: none;
+    }
+
+    .nav-link:hover {
+        padding-left: 3rem;
+        color: var(--primary-color);
+    }
+}
+
 .hamburger::before {
     content: '';
     position: absolute;
@@ -191,7 +260,7 @@ body {
     transition: 0s;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .hamburger {
         display: flex;
         align-items: center;
@@ -200,7 +269,7 @@ body {
 }
 
 /* Mobile Menu */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .hamburger {
         display: block;
     }
@@ -331,10 +400,53 @@ body.menu-open .content-blur {
 }
 
 .glitch-container {
-    font-size: 4rem;
+    font-size: clamp(1.5rem, 5vw, 3rem);
     font-weight: 800;
     text-transform: uppercase;
     text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.typing-text {
+    font-size: clamp(0.8rem, 3vw, 1.2rem);
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-top: 0.5rem;
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+    opacity: 0.9;
+    color: var(--text-light);
+    padding: 0 1rem;
+}
+
+/* Ajustements spécifiques pour les petits écrans */
+@media (max-width: 768px) {
+    .glitch-container {
+        font-size: clamp(1.5rem, 7vw, 3rem);
+    }
+
+    .typing-text {
+        font-size: clamp(0.8rem, 4vw, 1.2rem);
+    }
+}
+
+/* Ajustements spécifiques pour les grands écrans */
+@media (min-width: 1200px) {
+    .glitch-container {
+        font-size: clamp(2rem, 5vw, 4rem);
+    }
+
+    .typing-text {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+    }
 }
 
 /* Animation */

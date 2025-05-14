@@ -1,4 +1,4 @@
-/* Variables globales */
+/* Définition des variables CSS pour la cohérence visuelle */
 :root {
     --bg-darker: #0a0a0a;
     --primary-color: #4a90e2;
@@ -10,7 +10,7 @@
     --border-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Style global */
+/* Configuration de base et normalisation */
 body {
     background: var(--bg-darker);
     color: var(--text-light);
@@ -19,7 +19,7 @@ body {
     overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-/* Navbar Styles */
+/* Barre de navigation avec positionnement fixe et effets de transparence */
 .navbar {
     position: fixed;
     top: 0;
@@ -75,7 +75,7 @@ body {
     width: 100%;
 }
 
-/* Hamburger Menu - Animation Futuriste */
+/* Hamburger Menu - Transition et animation avancée */
 .hamburger {
     display: none;
     cursor: pointer;
@@ -92,7 +92,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Mobile Menu */
+/* Adaptation responsive pour interfaces mobiles */
 @media (max-width: 900px) {
     .hamburger {
         display: flex;
@@ -222,7 +222,7 @@ body {
     transform-origin: left;
 }
 
-/* Animation active */
+/* État actif - Transformation géométrique */
 .hamburger.active {
     transform: rotate(180deg);
 }
@@ -242,7 +242,7 @@ body {
     width: 32px;
 }
 
-/* Effet ripple au clic */
+/* Effet d'onde radiale au clic */
 .hamburger::after {
     content: '';
     position: absolute;
@@ -268,7 +268,7 @@ body {
     }
 }
 
-/* Mobile Menu */
+/* Adaptation responsive pour interfaces mobiles */
 @media (max-width: 1024px) {
     .hamburger {
         display: block;
@@ -335,7 +335,7 @@ body {
     }
 }
 
-/* Ajout d'un effet de flou sur le contenu principal quand le menu est ouvert */
+/* Application d'un filtre de flou gaussien sur le contenu principal lors de l'activation du menu */
 .content-blur {
     transition: filter 0.3s ease;
 }
@@ -344,7 +344,7 @@ body.menu-open .content-blur {
     filter: blur(5px);
 }
 
-/* Profile Image Styles */
+/* Styles d'image de profil avec effets dynamiques */
 .cyber-profile {
     position: relative;
     width: 50%;
@@ -416,7 +416,7 @@ body.menu-open .content-blur {
     }
 }
 
-/* Section Accueil */
+/* Section d'accueil avec dégradé de fond et centrage flexbox */
 .welcome-section {
     background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
     min-height: 100vh;
@@ -461,7 +461,7 @@ body.menu-open .content-blur {
     animation: gradient-shift 8s linear infinite;
 }
 
-/* Ajustements spécifiques pour les petits écrans */
+/* Media queries pour l'optimisation sur appareils mobiles */
 @media (max-width: 900px) {
     .glitch-container {
         font-size: clamp(1.5rem, 7vw, 3rem);
@@ -480,7 +480,7 @@ body.menu-open .content-blur {
     }
 }
 
-/* Ajustements spécifiques pour les grands écrans */
+/* Media queries pour l'optimisation sur grands écrans */
 @media (min-width: 1200px) {
     .glitch-container {
         font-size: clamp(2rem, 5vw, 4rem);
@@ -495,11 +495,11 @@ body.menu-open .content-blur {
     }
 }
 
-/* Animation */
-@keyframes glitch-anim { /* Animation pour le glitch */ }
-@keyframes cyber-rotate { /* Animation pour la rotation */ }
+/* Animations keyframes */
+@keyframes glitch-anim { /* Effet de distorsion temporelle */ }
+@keyframes cyber-rotate { /* Transformation de rotation 3D */ }
 
-/* Cartes de services */
+/* Composants modulaires pour présentation de services */
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -510,7 +510,7 @@ body.menu-open .content-blur {
     transform: translateY(-5px);
 }
 
-/* Project Cards - Style Futuriste */
+/* Cartes de projet - Composants avec effets de profondeur et transitions */
 .card {
     position: relative;
     height: 450px;
@@ -583,7 +583,7 @@ body.menu-open .content-blur {
     background: linear-gradient(90deg, var(--primary-color), transparent);
 }
 
-/* Styles pour les cartes avec rotation */
+/* Système de cartes avec effet de rotation 3D */
 .card-container {
     perspective: 1000px;
     height: 100%;
@@ -666,7 +666,7 @@ body.menu-open .content-blur {
     box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
 }
 
-/* Animation d'apparition du texte */
+/* Transition d'opacité et de position pour le texte */
 .card-back .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -685,7 +685,7 @@ body.menu-open .content-blur {
     }
 }
 
-/* Description Animation */
+/* Animation de transition pour les éléments descriptifs */
 .card .collapse {
     height: 0;
     opacity: 0;
@@ -711,14 +711,14 @@ body.menu-open .content-blur {
     transform: translateY(0);
 }
 
-/* Boutons */
+/* Composants interactifs avec états et transitions */
 .btn-group {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
 }
 
-/* Bouton Description du projet */
+/* Bouton principal avec dégradé et effets de survol */
 .btn-primary {
     background: rgba(25, 55, 109, 0.85);
     border: 2px solid #6ba5e7;
@@ -777,7 +777,7 @@ body.menu-open .content-blur {
     transform: translateY(-2px);
 }
 
-/* Animation de scan */
+/* Animation de ligne de balayage linéaire */
 @keyframes scanline {
     0% {
         transform: translateY(-100%);
@@ -806,7 +806,7 @@ body.menu-open .content-blur {
     animation-play-state: running;
 }
 
-/* Responsive */
+/* Adaptations pour différentes résolutions d'écran */
 @media (max-width: 900px) {
     .card {
         height: auto;
@@ -820,7 +820,7 @@ body.menu-open .content-blur {
     }
 }
 
-/* Formulaire de contact */
+/* Formulaire avec arrière-plan semi-transparent et transitions */
 #contact-form {
     background: rgba(255, 255, 255, 0.03);
     padding: 2.5rem;
@@ -828,7 +828,7 @@ body.menu-open .content-blur {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* Boutons */
+/* Composants interactifs avec états et transitions */
 .btn-primary {
     background: var(--primary-color);
     border: none;
@@ -839,15 +839,15 @@ body.menu-open .content-blur {
     background: var(--secondary-color);
 }
 
-/* Responsive */
+/* Adaptations pour différentes résolutions d'écran */
 @media (max-width: 900px) {
     .nav-link { padding: 0.8rem 1.5rem; }
 }
 
-/* Autres styles */
-/* Ajoutez ici d'autres styles spécifiques */
+/* Styles complémentaires */
+/* Espace réservé pour extensions et personnalisations */
 
-/* Variables de couleur */
+/* Palette de couleurs et variables d'interface */
 :root {
     --primary-color: #007bff;
     --secondary-color: #6c757d;
@@ -859,7 +859,7 @@ body.menu-open .content-blur {
     --nav-text: #ffffff;
 }
 
-/* Styles globaux */
+/* Réinitialisation et normalisation des styles */
 * {
     margin: 0;
     padding: 0;
@@ -913,7 +913,7 @@ body {
     width: 100%;
 }
 
-/* Animations de texte */
+/* Animations séquentielles pour éléments textuels */
 .char-animation {
     display: inline-block;
     opacity: 0;
@@ -928,7 +928,7 @@ body {
     }
 }
 
-/* Canvas des particules */
+/* Calque de fond pour effets visuels dynamiques */
 .particle-canvas {
     position: fixed;
     top: 0;
@@ -939,7 +939,7 @@ body {
     z-index: -1;
 }
 
-/* Animations au scroll */
+/* Déclenchement d'animations basé sur la position de défilement */
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
@@ -951,7 +951,7 @@ body {
     transform: translateY(0);
 }
 
-/* Barres de compétences */
+/* Indicateurs visuels de progression avec animation */
 .skill-bar {
     height: 8px;
     background: var(--accent-color);
@@ -960,7 +960,7 @@ body {
     border-radius: 4px;
 }
 
-/* Media Queries */
+/* Règles conditionnelles pour différentes tailles d'écran */
 @media (max-width: 900px) {
     .navlinks-container {
         position: fixed;
@@ -1342,7 +1342,7 @@ h1, h2, h3 {
     width: 100%;
 }
 
-/* Formulaire de contact */
+/* Formulaire avec arrière-plan semi-transparent et transitions */
 #contact-form {
     background: rgba(255, 255, 255, 0.03);
     padding: 2.5rem;
@@ -1772,7 +1772,7 @@ nav {
     z-index: 1;
 }
 
-/* Trait de séparation */
+/* Élément de division visuelle */
 #about hr {
     opacity: 0.2;
     background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
@@ -1784,7 +1784,7 @@ nav {
     }
 }
 
-/* Animation cyberpunk du texte d'accueil */
+/* Animation dynamique avec effets de distorsion pour le texte d'accueil */
 .welcome-section {
     position: relative;
     min-height: 100vh;
@@ -1807,11 +1807,11 @@ nav {
     text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
 }
 
-/* Animation */
-@keyframes glitch-anim { /* Animation pour le glitch */ }
-@keyframes cyber-rotate { /* Animation pour la rotation */ }
+/* Animations keyframes */
+@keyframes glitch-anim { /* Effet de distorsion temporelle */ }
+@keyframes cyber-rotate { /* Transformation de rotation 3D */ }
 
-/* Styles pour les cartes avec rotation */
+/* Système de cartes avec effet de rotation 3D */
 .card-container {
     perspective: 1000px;
     height: 100%;
@@ -1876,7 +1876,7 @@ nav {
     background: transparent;
 }
 
-/* Animation d'apparition du texte */
+/* Transition d'opacité et de position pour le texte */
 .card-back .fade-in {
     opacity: 0;
     animation: fadeIn 0.5s ease-in forwards;
@@ -2022,7 +2022,7 @@ nav {
     100% { box-shadow: 0 0 5px rgba(74, 144, 226, 0.3), 0 0 10px rgba(74, 144, 226, 0.2); }
 }
 
-/* Animations */
+/* Séquences d'animation pour effets visuels */
 @keyframes glitch-anim {
     0% {
         clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
@@ -2098,7 +2098,7 @@ nav {
     }
 }
 
-@keyframes cyber-scan {
+@keyframes cyber-scan { /* Animation de balayage horizontal */
     from {
         transform: translateY(-50%) translateX(-100%);
     }
@@ -2107,7 +2107,7 @@ nav {
     }
 }
 
-@keyframes cyber-shine {
+@keyframes cyber-shine { /* Effet de brillance en diagonale */
     from {
         transform: translateX(-100%) rotate(45deg);
     }
@@ -2116,7 +2116,7 @@ nav {
     }
 }
 
-@keyframes typing {
+@keyframes typing { /* Animation d'écriture progressive */
     from {
         width: 0;
     }
@@ -2125,7 +2125,7 @@ nav {
     }
 }
 
-@keyframes blink-caret {
+@keyframes blink-caret { /* Clignotement du curseur */
     from, to {
         border-color: transparent;
     }
@@ -2250,7 +2250,7 @@ footer {
     position: relative; /* Ensure proper positioning */
 }
 
-/* Animations supplémentaires pour les cartes */
+/* Transitions et transformations avancées pour les composants de carte */
 @keyframes glowPulse {
     0% { box-shadow: 0 0 5px rgba(74, 144, 226, 0.2); }
     50% { box-shadow: 0 0 20px rgba(74, 144, 226, 0.4); }
@@ -2312,7 +2312,7 @@ footer {
     animation: borderFlow 3s linear infinite;
 }
 
-/* Description Animation */
+/* Animation de transition pour les éléments descriptifs */
 .card .collapse {
     height: 0;
     opacity: 0;

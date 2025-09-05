@@ -2654,39 +2654,71 @@ footer {
   background: #fff;
   margin: 0 auto 16px auto;
   display: block;
+  --zoom-scale: 2.8;
+  transform-origin: center;
   transition:
     transform 0.5s cubic-bezier(.23,1.02,.64,.97),
     box-shadow 0.5s cubic-bezier(.23,1.02,.64,.97),
     border-radius 0.5s cubic-bezier(.23,1.02,.64,.97),
     z-index 0s;
+  will-change: transform, box-shadow, border-radius;
   z-index: 1;
   position: relative;
   overflow: hidden;
+  cursor: zoom-in;
+}
+
+/* Halo de base pour une transition plus fluide */
+.circular-img::after {
+  content: '';
+  position: absolute;
+  top: -15px; left: -15px; right: -15px; bottom: -15px;
+  border-radius: 28px;
+  background: radial-gradient(rgba(74,144,226,0.16) 60%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease, border-radius 0.5s cubic-bezier(.23,1.02,.64,.97);
+  pointer-events: none;
+  z-index: -1;
 }
  
- 
 .circular-img:hover,
-.circular-img:focus {
-  transform: scale(2.2) translateY(-15px);
-  border-radius: 16px;    /* Passe de cercle à rectangle arrondi */
-  object-fit: contain;    /* Affiche toute l'image, même les coins */
+.circular-img:focus,
+.circular-img:focus-visible {
+  transform: scale(var(--zoom-scale)) translateY(-10px) !important;
+  border-radius: var(--radius-2);    /* Passe de cercle à rectangle arrondi */
+  object-fit: contain;                /* Affiche toute l'image, même les coins */
   background: #fff;
   box-shadow: 0 12px 60px 16px rgba(74,144,226,0.30), 0 0 0 12px rgba(74,144,226,0.12);
   z-index: 20;
   border-color: #4a90e2;
-  cursor: pointer;
+  cursor: zoom-out;
 }
  
- /* Optionnel : effet de halo lumineux au hover */
- .circular-img:hover::after {
-   content: '';
-   position: absolute;
-   top: -15px; left: -15px; right: -15px; bottom: -15px;
-   border-radius: 28px;
-   background: radial-gradient(rgba(74,144,226,0.16) 60%, transparent 100%);
-   pointer-events: none;
-   z-index: -1;
- }
+/* Effet de halo lumineux au hover/focus */
+.circular-img:hover::after,
+.circular-img:focus::after,
+.circular-img:focus-visible::after {
+  opacity: 1;
+  border-radius: 28px;
+}
+
+/* Adaptation mobile: zoom plus contenu */
+@media (max-width: 576px) {
+  .circular-img { --zoom-scale: 2.1; }
+}
+
+/* Accessibilité: réduire les animations si l'utilisateur le demande */
+@media (prefers-reduced-motion: reduce) {
+  .circular-img,
+  .circular-img::after {
+    transition: none;
+  }
+  .circular-img:hover,
+  .circular-img:focus,
+  .circular-img:focus-visible {
+    transform: none;
+  }
+}
 
  @media (max-width: 1900px) {
    .cyber-box {

@@ -106,6 +106,10 @@ export class AdvancedAnimations {
 class TitleAnimator {
     constructor() {
         this.title = document.getElementById('mainTitle');
+        // Guard: if the main title element is not present, skip initializing to avoid errors
+        if (!this.title) {
+            return;
+        }
         this.originalText = this.title.textContent;
         this.letters = [];
         this.init();
@@ -159,7 +163,9 @@ class TitleAnimator {
 
     animateLetter(letter) {
         letter.style.animation = 'none';
-        letter.offsetHeight; // Forcer le reflow
+        // Forcer le reflow pour redémarrer l'animation
+        // eslint-disable-next-line no-unused-expressions
+        letter.offsetHeight;
         letter.classList.add('letter-hover');
         
         // Effet de vague sur les lettres voisines
@@ -200,7 +206,10 @@ class TitleAnimator {
     }
 
     addMouseTracking() {
+        // Ensure we have a valid title and wrapper before attaching listeners
+        if (!this.title) return;
         const wrapper = this.title.querySelector('.title-wrapper');
+        if (!wrapper) return;
         
         document.addEventListener('mousemove', (e) => {
             const rect = wrapper.getBoundingClientRect();
@@ -306,16 +315,24 @@ class WelcomeAnimator {
     constructor() {
         this.container = document.querySelector('.text-welcome');
         this.text = document.querySelector('.text');
+        // Guard: if required elements are missing, do not initialize
+        if (!this.container || !this.text) {
+            this.enabled = false;
+            return;
+        }
+        this.enabled = true;
         this.init();
     }
 
     init() {
+        if (!this.enabled) return;
         this.setupParticleEffect();
         this.setupTextAnimation();
         this.setupMouseTracking();
     }
 
     setupParticleEffect() {
+        if (!this.enabled) return;
         const canvas = document.createElement('canvas');
         canvas.classList.add('particles-canvas');
         this.container.appendChild(canvas);
@@ -364,6 +381,7 @@ class WelcomeAnimator {
         }
 
         const animate = () => {
+            if (!this.enabled) return; // safety
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(particle => {
                 particle.update();
@@ -375,6 +393,7 @@ class WelcomeAnimator {
     }
 
     setupTextAnimation() {
+        if (!this.enabled) return;
         const spans = this.text.querySelectorAll('span');
         spans.forEach((span, i) => {
             span.style.animationDelay = `${i * 0.1}s`;
@@ -390,6 +409,7 @@ class WelcomeAnimator {
     }
 
     setupMouseTracking() {
+        if (!this.enabled) return;
         this.container.addEventListener('mousemove', (e) => {
             const { left, top, width, height } = this.container.getBoundingClientRect();
             const x = (e.clientX - left) / width - 0.5;
@@ -409,9 +429,12 @@ class WelcomeAnimator {
     }
 }
 
-// Initialisation
+// Initialisation conditionnelle
 document.addEventListener('DOMContentLoaded', () => {
-    new TitleAnimator();
+    const hasMainTitle = !!document.getElementById('mainTitle');
+    if (hasMainTitle) {
+        new TitleAnimator();
+    }
     new NavbarAnimator();
     new WelcomeAnimator();
 });

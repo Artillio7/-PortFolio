@@ -10,6 +10,41 @@
     --border-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Style pour le titre du portfolio avec dégradé */
+.portfolio-title {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--text-light) 100%);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 3s ease-out 1 forwards;
+    font-weight: 700;
+    text-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
+    position: relative;
+}
+
+.portfolio-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+@keyframes gradient-shift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
 /* Configuration de base et normalisation */
 body {
     background: var(--bg-darker);
@@ -52,7 +87,14 @@ body {
     font-weight: 500;
     position: relative;
     padding: 0.5rem 0;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.15s ease;
+}
+
+.nav-link:focus-visible {
+    color: var(--secondary-color);
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 3px;
+    border-radius: 8px;
 }
 
 .nav-link::after {
@@ -90,6 +132,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
     transition: all 0.3s ease;
+}
+
+.hamburger:focus-visible {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px rgba(80, 227, 194, 0.25);
 }
 
 /* Adaptation responsive pour interfaces mobiles */
@@ -2663,3 +2711,86 @@ footer {
      animation: gradient-shift 8s linear infinite;
    }
  }
+
+/* === Theme spacing, radius and shadows (appended) === */
+:root {
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 1rem;     /* 16px */
+  --space-4: 1.5rem;   /* 24px */
+  --space-5: 2rem;     /* 32px */
+  --space-6: 3rem;     /* 48px */
+
+  --radius-1: 6px;
+  --radius-2: 12px;
+  --radius-3: 20px;
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.12);
+  --shadow-2: 0 6px 16px rgba(0,0,0,0.18);
+  --shadow-3: 0 20px 40px rgba(0,0,0,0.28);
+}
+
+/* === Focus visible accessibility for nav and buttons === */
+.nav-link:focus-visible,
+#hamburger:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(80, 227, 194, 0.25);
+  border-radius: var(--radius-2);
+}
+
+/* Subtle nav interactions */
+.nav-link {
+  transition: color 150ms ease, transform 150ms ease;
+}
+.nav-link:hover, .nav-link:focus-visible {
+  color: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+/* === CTA micro-interactions === */
+.btn,
+button,
+[role="button"].btn {
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+  will-change: transform, box-shadow;
+}
+.btn:hover,
+.btn:focus-visible,
+button:hover,
+button:focus-visible {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(74, 144, 226, 0.2), var(--shadow-1);
+  filter: saturate(1.05);
+}
+
+/* === Section hierarchy rhythm === */
+section#about, section#services, section#contact {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+section#about h2, section#services h2, section#contact h2 {
+  margin-bottom: var(--space-4);
+}
+section#about p, section#services p, section#contact p {
+  line-height: 1.7;
+  margin-bottom: var(--space-3);
+}
+
+/* === Cards consistency === */
+.card {
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-1);
+}
+.card:hover {
+  box-shadow: var(--shadow-2);
+}
+
+/* Focus within card for keyboard users */
+.card:focus-within {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}

@@ -1,15 +1,25 @@
-// Menu hamburger avec animations avancées
+// Menu hamburger avec animations avancées et accessibilité
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
     const body = document.body;
     let menuOpen = false;
 
+    // Accessibilité du bouton hamburger
+    if (hamburger) {
+        hamburger.setAttribute('role', 'button');
+        hamburger.setAttribute('tabindex', '0');
+        hamburger.setAttribute('aria-controls', 'nav-menu');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-label', 'Ouvrir le menu');
+    }
+
     function openMenu() {
         menuOpen = true;
         hamburger.classList.add('active');
         navMenu.classList.add('active');
         body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
     }
 
     function closeMenu() {
@@ -17,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
         body.style.overflow = '';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     }
 
     // Event listener pour le hamburger - un seul clic
@@ -26,6 +37,25 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMenu();
         } else {
             openMenu();
+        }
+    });
+
+    // Activation clavier (Enter / Espace)
+    hamburger.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (menuOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+    });
+
+    // Fermer le menu avec Echap
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && menuOpen) {
+            closeMenu();
         }
     });
 
@@ -138,7 +168,37 @@ descriptionButtons.forEach((button) => {
   });
 });
 
-AOS.init();
+// Chargement dynamique d'AOS via CDN si non présent
+(function ensureAOS() {
+  if (window.AOS) {
+    try {
+      window.AOS.init({ once: true, duration: 700, easing: 'ease-out-quart' });
+    } catch (e) { console.error('Erreur init AOS:', e); }
+    return;
+  }
+  if (window.__aosLoading) return; // éviter double chargement
+  window.__aosLoading = true;
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://unpkg.com/aos@2.3.4/dist/aos.css';
+  document.head.appendChild(link);
+
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/aos@2.3.4/dist/aos.js';
+  script.defer = true;
+  script.onload = () => {
+    window.__aosLoading = false;
+    if (window.AOS) {
+      try { window.AOS.init({ once: true, duration: 700, easing: 'ease-out-quart' }); } catch (e) { console.error('Erreur init AOS:', e); }
+    }
+  };
+  script.onerror = () => {
+    window.__aosLoading = false;
+    console.warn('Impossible de charger AOS depuis le CDN');
+  };
+  document.head.appendChild(script);
+})();
 
 new ResizeObserver((entries) => {
   if (entries[0].contentRect.width <= 900) {

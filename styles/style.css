@@ -2829,3 +2829,93 @@ section#about p, section#services p, section#contact p {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
+
+/* === Seamless section transitions and desktop navbar background === */
+@media (min-width: 901px) {
+  .navbar {
+    background: rgba(24, 26, 32, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(74, 144, 226, 0.08);
+  }
+}
+
+/* About section: softened grey with smooth fade to Contact */
+#about {
+  background: linear-gradient(180deg, #1b1f24 0%, #1a1e23 55%, #14181d 100%);
+}
+#about::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(20,24,29,1) 0%, rgba(16,19,23,1) 60%, rgba(13,15,18,0.98) 100%);
+  pointer-events: none;
+}
+
+/* Contact top aligns with About bottom; remove intersections */
+#contact {
+  margin-top: 0 !important;
+  background: linear-gradient(180deg, #13171b 0%, #0f1216 100%);
+}
+
+/* Footer continues the Contact design so we don't revert to base background */
+.footer {
+  background: linear-gradient(180deg, #0f1216 0%, #0a0a0a 100%) !important;
+  border-top: 0 !important;
+  margin-top: 0 !important;
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 19, 24, 0.70) 0%, rgba(10, 12, 15, 0.85) 100%);
+  backdrop-filter: blur(4px) saturate(110%);
+  pointer-events: none;
+}
+
+/* Remove seam from contact bg-dark container */
+#contact.bg-dark {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Cohesive overlay across the entire contact section to avoid bare background */
+#contact {
+  position: relative;
+  isolation: isolate; /* create stacking context so overlay stays behind content */
+}
+#contact::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 20, 25, 0.60) 0%, rgba(12, 15, 19, 0.60) 100%);
+  backdrop-filter: blur(4px) saturate(110%);
+  pointer-events: none;
+  z-index: 0;
+}
+#contact > * { position: relative; z-index: 1; }
+
+/* Frosted dark-glass form that lets background show through with a tint */
+#contact-form {
+  background: rgba(18, 22, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px) saturate(120%);
+}
+#contact-form:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+#contact-form .form-control {
+  background: rgba(12, 16, 22, 0.60);
+  border: 1px solid rgba(74, 144, 226, 0.25);
+}
+#contact-form .form-control:focus {
+  background: rgba(12, 16, 22, 0.65);
+}
+
+/* Softer, better-integrated gray for About that blends into Contact */
+#about {
+  background: linear-gradient(180deg, #20242c 0%, #171c23 55%, #11161d 100%);
+}

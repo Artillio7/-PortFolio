@@ -2,7 +2,8 @@
 :root {
     --bg-darker: #0a0a0a;
     --primary-color: #4a90e2;
-    --secondary-color: #50E3C2;
+    --secondary-color: #6fa8dc;
+    --accent-blue: #5b9bd5;
     --text-light: #ffffff;
     --transition-speed: 0.3s;
     --nav-bg: rgba(0, 0, 0, 0.95);
@@ -47,7 +48,7 @@
 
 /* Configuration de base et normalisation */
 body {
-    background: var(--bg-darker);
+    background: #080c11;
     color: var(--text-light);
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
@@ -429,19 +430,9 @@ body.menu-open .content-blur {
     filter: brightness(1.1);
 }
 
+/* cyber-scan-line - disabled animation */
 .cyber-scan-line {
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        var(--primary-color),
-        #50E3C2,
-        var(--primary-color), 
-        transparent);
-    animation: scanLine 3s linear infinite;
-    z-index: 1;
-    opacity: 0.8;
+    display: none;
 }
 
 @keyframes fadeIn {
@@ -464,9 +455,8 @@ body.menu-open .content-blur {
     }
 }
 
-/* Section d'accueil avec dégradé de fond et centrage flexbox */
+/* Section d'accueil - background set in unified section */
 .welcome-section {
-    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -871,23 +861,13 @@ body.menu-open .content-blur {
     }
 }
 
+/* Card scan effect - disabled */
 .card::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-    top: 0;
-    left: 0;
-    opacity: 0;
-    filter: blur(1px);
-    animation: scanline 2s linear infinite;
-    animation-play-state: paused;
+    display: none;
 }
 
 .card:hover::after {
-    opacity: 0.5;
-    animation-play-state: running;
+    display: none;
 }
 
 /* Adaptations pour différentes résolutions d'écran */
@@ -1015,15 +995,145 @@ body {
     }
 }
 
-/* Calque de fond pour effets visuels dynamiques */
+/* Calque de fond pour effets visuels dynamiques - ANCIEN SYSTÈME */
 .particle-canvas {
+    display: none; /* Désactivé - remplacé par stellar-canvas */
+}
+
+/* ============================================
+   STELLAR ENGINE - Système d'étoiles avancé
+   ============================================ */
+
+.stellar-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 0;
+    background: transparent;
+}
+
+/* Amélioration du contraste pour les étoiles */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 20% 20%, rgba(74, 144, 226, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.02) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(10, 10, 10, 0) 0%, rgba(8, 12, 17, 0.5) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* S'assurer que le contenu est au-dessus du canvas stellaire */
+.navbar {
+    z-index: 1000;
+}
+
+.welcome-section,
+#portfolio,
+#services,
+#about,
+#contact,
+footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* Effet de profondeur cosmique pour les sections */
+section {
+    position: relative;
+}
+
+section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(8, 12, 17, 0.3) 50%,
+        transparent 100%);
+    pointer-events: none;
     z-index: -1;
+}
+
+/* Animation de scintillement CSS pour fallback */
+@keyframes stellarTwinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes stellarPulse {
+    0%, 100% {
+        box-shadow: 0 0 4px rgba(74, 144, 226, 0.5),
+                    0 0 8px rgba(74, 144, 226, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 8px rgba(74, 144, 226, 0.8),
+                    0 0 16px rgba(74, 144, 226, 0.5),
+                    0 0 24px rgba(74, 144, 226, 0.3);
+    }
+}
+
+@keyframes shootingStar {
+    0% {
+        transform: translateX(0) translateY(0) rotate(-45deg);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(500px) translateY(500px) rotate(-45deg);
+        opacity: 0;
+    }
+}
+
+/* Classe utilitaire pour éléments qui doivent être au-dessus des étoiles */
+.above-stars {
+    position: relative;
+    z-index: 2;
+}
+
+/* === Sections où les étoiles sont visibles à travers === */
+.stellar-visible {
+    background: transparent !important;
+    position: relative;
+}
+
+.stellar-visible::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 30%,
+        rgba(8, 12, 17, 0.2) 0%,
+        rgba(8, 12, 17, 0.1) 60%,
+        transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stellar-visible > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Titre Contact avec effet glow pour meilleure lisibilité */
+.stellar-visible h2 {
+    text-shadow: 0 0 30px rgba(74, 144, 226, 0.4),
+                 0 0 60px rgba(74, 144, 226, 0.2),
+                 0 4px 15px rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Déclenchement d'animations basé sur la position de défilement */
@@ -1540,13 +1650,11 @@ h1, h2, h3 {
     animation: shake 0.4s ease-in-out;
 }
 
-/* Services Section Styles */
+/* Services Section Styles - background set in unified section below */
 #services {
-    background-color: rgba(0, 0, 0, 0.8); /* Dark background with transparency */
-    color: #f0f0f0; /* Light text color for contrast */
-    padding: 40px 20px; /* Adequate padding */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    color: #f0f0f0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .service-card {
@@ -1808,13 +1916,13 @@ nav {
 
 /* Section */
 #about {
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     align-items: center;
     background: var(--bg-darker);
     position: relative;
-    overflow: hidden;
-    padding: 100px 0;
+    overflow: visible;
+    padding: 120px 0 180px 0;
 }
 
 #about::before {
@@ -1877,18 +1985,7 @@ nav {
 }
 
 /* Animation dynamique avec effets de distorsion pour le texte d'accueil */
-.welcome-section {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center,
-        rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.95) 100%
-    );
-    overflow: hidden;
-}
+/* welcome-section duplicate - background in unified section */
 
 .glitch-container {
     position: relative;
@@ -2341,21 +2438,16 @@ footer {
     100% { box-shadow: 0 0 5px rgba(74, 144, 226, 0.2); }
 }
 
-@keyframes borderFlow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
+/* Cards - clean hover without animations */
 .card {
     position: relative;
     height: 450px;
-    background: rgba(10, 10, 10, 0.3);
-    border: 1px solid rgba(74, 144, 226, 0.1);
-    backdrop-filter: blur(10px);
+    background: rgba(12, 14, 18, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
     border-radius: 15px;
     overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
     perspective: 1000px;
 }
@@ -2366,34 +2458,13 @@ footer {
 }
 
 .card:hover {
-    transform: translateY(-10px) scale(1.02);
-    animation: glowPulse 2s infinite;
+    transform: translateY(-6px);
+    border-color: rgba(74, 144, 226, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(
-        45deg,
-        var(--primary-color),
-        var(--secondary-color),
-        var(--primary-color)
-    );
-    background-size: 200% 200%;
-    animation: borderFlow 3s linear infinite;
-    border-radius: 15px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-}
-
-.card:hover::before {
-    opacity: 1;
-    animation: borderFlow 3s linear infinite;
+    display: none;
 }
 
 /* Animation de transition pour les éléments descriptifs */
@@ -2422,20 +2493,14 @@ footer {
     transform: translateY(0) scale(1);
 }
 
-/* Effet de scan actif */
+/* Effet de scan actif - désactivé */
 .card.scanning::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        var(--primary-color),
-        var(--secondary-color),
-        transparent
-    );
-    top: 0;
+    display: none;
+}
+
+/* Placeholder for removed effect */
+.card-scan-placeholder {
+    display: none;
     left: 0;
     opacity: 1;
     filter: blur(1px);
@@ -2928,10 +2993,498 @@ section#about p, section#services p, section#contact p {
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.12);
 }
 
-/* Softer, better-integrated gray for About that blends into Contact */
+/* About section - removed old conflicting styles, see unified transitions below */
+
+/* === UNIFIED CONTACT + FOOTER ZONE === */
+/* Fond TRANSPARENT pour voir les étoiles */
+#contact {
+  background: transparent !important;
+  padding: 80px 0 50px 0 !important;
+  margin-top: 0 !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* Overlay très subtil pour lisibilité sans masquer les étoiles */
+#contact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center,
+    rgba(8, 12, 17, 0.3) 0%,
+    rgba(8, 12, 17, 0.15) 50%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#contact > .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Visual separator between contact info and form */
+#contact-form {
+  margin-top: 50px;
+  padding-top: 60px;
+  position: relative;
+}
+
+/* Subtle divider line */
+#contact-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 400px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(74, 144, 226, 0.15) 20%,
+    rgba(74, 144, 226, 0.2) 50%,
+    rgba(74, 144, 226, 0.15) 80%,
+    transparent 100%);
+}
+
+/* Footer - TRANSPARENT pour voir les étoiles */
+.footer {
+  background: transparent !important;
+  padding: 40px 0 30px 0 !important;
+  margin-top: 20px !important;
+  border-top: none !important;
+  position: relative;
+  z-index: 2;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.2), transparent);
+}
+
+.footer p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.85rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* === About content container fix === */
+.about-content {
+  padding: 60px 50px 80px 50px !important;
+  margin-bottom: 0 !important;
+  background: rgba(10, 14, 20, 0.5) !important;
+  border: 1px solid rgba(74, 144, 226, 0.08) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3) !important;
+}
+
+.about-content h3 {
+  color: #7eb3ed !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+}
+
+.about-content .lead {
+  font-size: 1.02rem !important;
+  line-height: 1.8 !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.about-content .lead strong {
+  color: #9ec5f0;
+  font-weight: 500;
+}
+
+@media (max-width: 991px) {
+  .about-content {
+    padding: 40px 25px 60px 25px !important;
+  }
+
+  .about-content .lead {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* === Enhanced color contrasts === */
+/* Subtle glow effect on section headings */
+#portfolio h2,
+#services h2,
+#about h2,
+#contact h2 {
+  text-shadow: 0 0 30px rgba(74, 144, 226, 0.2);
+  color: #fff !important;
+}
+
+/* Better contrast for service cards */
+.service-card {
+  background: rgba(11, 15, 21, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 16px !important;
+  padding: 30px 25px !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.service-card:hover {
+  background: rgba(14, 19, 27, 0.75) !important;
+  border-color: rgba(74, 144, 226, 0.2) !important;
+  transform: translateY(-6px) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3), 0 0 15px rgba(74, 144, 226, 0.08) !important;
+}
+
+.service-card h2 {
+  font-size: 1.25rem !important;
+  margin: 18px 0 12px 0 !important;
+  color: #e8eef5 !important;
+}
+
+.service-card h6,
+.framework-description h6 {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.65 !important;
+  font-weight: 400 !important;
+}
+
+/* === Smooth gradient transitions between ALL sections === */
+/* All sections use very close color values for seamless flow */
+
+/* Welcome section - starts dark */
+.welcome-section {
+  background: #080c11 !important;
+}
+
+/* Portfolio section - same tone */
+#portfolio {
+  background: #080c11 !important;
+  padding-top: 80px !important;
+  padding-bottom: 60px !important;
+  position: relative;
+}
+
+/* Subtle separator line instead of color change */
+#portfolio::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.2), transparent);
+}
+
+/* Services section */
+#services {
+  background: #080c11 !important;
+  padding: 80px 0 100px 0 !important;
+  position: relative;
+}
+
+/* About section */
 #about {
-  /* Layered: a faint radial glow + deep neutral vertical gradient */
-  background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(74, 144, 226, 0.10), rgba(74, 144, 226, 0) 60%),
-    linear-gradient(180deg, #0f1318 0%, #0d1116 60%, #0b0f14 100%);
+  background: #080c11 !important;
+  min-height: auto !important;
+  padding: 100px 0 120px 0 !important;
+  overflow: visible !important;
+  position: relative;
+}
+
+/* === Contact form - GLASSMORPHISM pour voir les étoiles === */
+#contact-form {
+  background: rgba(10, 14, 20, 0.35) !important;
+  border: 1px solid rgba(74, 144, 226, 0.2) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3),
+              inset 0 0 60px rgba(74, 144, 226, 0.03) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+}
+
+#contact-form:hover {
+  background: rgba(10, 14, 20, 0.45) !important;
+  border-color: rgba(74, 144, 226, 0.3) !important;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.35),
+              0 0 40px rgba(74, 144, 226, 0.1) !important;
+}
+
+/* Section dividers removed - using unified background instead */
+#about::after,
+#services::after {
+  display: none;
+}
+
+/* === Contact items - GLASSMORPHISM transparent === */
+.contact-item {
+  background: rgba(10, 14, 19, 0.25) !important;
+  border: 1px solid rgba(74, 144, 226, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+.contact-item:hover {
+  background: rgba(13, 18, 25, 0.4) !important;
+  border-color: rgba(74, 144, 226, 0.25) !important;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3),
+              0 0 30px rgba(74, 144, 226, 0.1) !important;
+  transform: translateY(-6px) !important;
+}
+
+.contact-item h4 {
+  color: #7eb3ed !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.contact-item p,
+.contact-item a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.contact-item i {
+  color: #6aa3dc !important;
+  filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.4));
+}
+
+/* === Back to Top Button === */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(74, 144, 226, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+  box-shadow: 0 4px 20px rgba(74, 144, 226, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.back-to-top:hover {
+  background: var(--secondary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(80, 227, 194, 0.5);
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 3px;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top i {
+  transition: transform 0.2s ease;
+}
+
+.back-to-top:hover i {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+}
+
+/* === Skeleton Loader for images === */
+.skeleton-loader {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.05) 25%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--radius-2);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* === Scroll reveal animations === */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === Improved link focus states === */
+a:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* === Skip to content link for accessibility === */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 var(--radius-2) var(--radius-2);
+  z-index: 10000;
+  transition: top 0.3s ease;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* === Enhanced CTA Button - Fixed white on white === */
+.btn-xl.btn-outline-light {
+  position: relative;
+  padding: 1rem 2.5rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 50px !important;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: #fff !important;
+  background: transparent !important;
+}
+
+.btn-xl.btn-outline-light::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.9) 0%, rgba(56, 116, 190, 0.95) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+
+.btn-xl.btn-outline-light:hover {
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+  box-shadow: 0 0 25px rgba(74, 144, 226, 0.35), 0 8px 30px rgba(0, 0, 0, 0.25) !important;
+  transform: translateY(-2px);
+}
+
+.btn-xl.btn-outline-light:hover::before {
+  opacity: 1;
+}
+
+/* === Clean card hover - blue tones only, no animation === */
+.card-container:hover .card-front,
+.card-container:hover .card-back {
+  border-color: rgba(74, 144, 226, 0.4) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(74, 144, 226, 0.15) !important;
+}
+
+.card-back {
+  background: linear-gradient(145deg, #0d1218 0%, #0a0e14 100%) !important;
+}
+
+.card-back h4 {
+  color: #7eb3ed !important;
+}
+
+.card-back p {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* === Smooth hover glow on profile image === */
+.cyber-profile:hover {
+  box-shadow:
+    0 0 40px rgba(74, 144, 226, 0.5),
+    0 0 80px rgba(74, 144, 226, 0.3),
+    0 0 120px rgba(74, 144, 226, 0.1) !important;
+}
+
+.cyber-profile:hover .profile-img {
+  filter: brightness(1.15) contrast(1.05) !important;
+}
+
+/* === Navbar active link indicator === */
+.nav-link.active {
+  color: var(--primary-color) !important;
+}
+
+.nav-link.active::after {
+  width: 100% !important;
+  background: var(--primary-color) !important;
+}
+
+/* === Better form input focus animation === */
+#contact-form .form-control {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#contact-form .form-control:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(74, 144, 226, 0.2) !important;
+}
+
+/* === Staggered animation delays for reveal elements === */
+.service-card:nth-child(1) { transition-delay: 0s !important; }
+.service-card:nth-child(2) { transition-delay: 0.1s !important; }
+.service-card:nth-child(3) { transition-delay: 0.2s !important; }
+
+.contact-item:nth-child(1) { transition-delay: 0s !important; }
+.contact-item:nth-child(2) { transition-delay: 0.1s !important; }
+.contact-item:nth-child(3) { transition-delay: 0.15s !important; }
+.contact-item:nth-child(4) { transition-delay: 0.2s !important; }
+
+/* === Reduce motion for accessibility === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .back-to-top,
+  .service-card,
+  .contact-item,
+  .card-container {
+    transition: none !important;
+  }
 }

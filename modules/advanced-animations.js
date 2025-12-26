@@ -1,73 +1,53 @@
+import { StellarEngine } from './stellar-engine.js';
+
 export class AdvancedAnimations {
     constructor() {
-        this.initializeParticles();
+        this.stellarEngine = null;
+        this.initializeStellarEngine();
         this.initializeTextEffects();
         this.initializeScrollAnimations();
     }
 
+    /**
+     * Initialise le moteur stellaire avancé
+     * Remplace l'ancien système de particules basique
+     */
+    initializeStellarEngine() {
+        // Configuration personnalisée pour le portfolio
+        this.stellarEngine = new StellarEngine({
+            starCount: 400,                    // Nombre d'étoiles
+            shootingStarInterval: 4000,        // Étoile filante toutes les ~4-8 secondes
+            nebulaCount: 6,                    // Nébuleuses d'arrière-plan
+            constellationDistance: 100,        // Distance pour connecter les étoiles
+            mouseInfluenceRadius: 180,         // Rayon d'interaction souris
+            enableConstellations: true,        // Lignes entre étoiles proches
+            enableShootingStars: true,         // Étoiles filantes
+            enableNebulae: true,               // Nuages cosmiques
+            enableMouseInteraction: true,      // Réaction au curseur
+            colorPalette: {
+                primary: '#4a90e2',            // Bleu primaire
+                secondary: '#6fa8dc',          // Bleu secondaire
+                accent: '#a855f7',             // Violet accent
+                warm: '#f59e0b',               // Orange chaud (rare)
+                white: '#ffffff'               // Blanc pur
+            }
+        });
+
+        // Exposer l'API pour interactions externes
+        window.stellarEngine = this.stellarEngine;
+
+        // Easter egg: Double-clic déclenche une étoile filante
+        document.addEventListener('dblclick', () => {
+            if (this.stellarEngine) {
+                this.stellarEngine.triggerShootingStar();
+            }
+        });
+    }
+
+    // Ancien système de particules (désactivé)
     initializeParticles() {
-        const canvas = document.createElement('canvas');
-        canvas.classList.add('particle-canvas');
-        document.body.appendChild(canvas);
-        
-        const ctx = canvas.getContext('2d');
-        const particles = [];
-        
-        const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-                this.size = Math.random() * 3;
-                this.alpha = Math.random() * 0.5 + 0.2;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < 100; i++) {
-            particles.push(new Particle());
-        }
-
-        const animate = () => {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            requestAnimationFrame(animate);
-        };
-
-        animate();
+        // Remplacé par StellarEngine
+        console.log('Legacy particle system disabled - using StellarEngine');
     }
 
     initializeTextEffects() {

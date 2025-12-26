@@ -1,15 +1,16 @@
 /**
  * STELLAR ENGINE - Moteur d'Animation Stellaire Ultra-Avancé
- * Version 2.0 - Niveau Senior (20+ ans d'expérience)
+ * Version 3.0 - Geek Edition avec Constellations Cachées
  *
  * Caractéristiques:
  * - Multi-couches parallaxe avec profondeur z
  * - Interaction souris avec champ gravitationnel
  * - Étoiles filantes dynamiques avec traînées
- * - Constellations interactives
+ * - NOUVEAU: Constellations geek cachées (</>, { }, 01)
+ * - NOUVEAU: Intensité réduite en zone hero
+ * - NOUVEAU: Messages révélés au survol
  * - Nébuleuses et poussière cosmique
  * - Effet bloom/glow avancé
- * - Pulsations et scintillements réalistes
  */
 
 export class StellarEngine {
@@ -24,6 +25,8 @@ export class StellarEngine {
             enableShootingStars: options.enableShootingStars !== false,
             enableNebulae: options.enableNebulae !== false,
             enableMouseInteraction: options.enableMouseInteraction !== false,
+            enableGeekConstellations: options.enableGeekConstellations !== false,
+            heroZoneDimming: options.heroZoneDimming || 0.4, // Réduction intensité zone hero
             colorPalette: options.colorPalette || {
                 primary: '#4a90e2',
                 secondary: '#6fa8dc',
@@ -38,11 +41,14 @@ export class StellarEngine {
         this.stars = [];
         this.shootingStars = [];
         this.nebulae = [];
+        this.geekConstellations = [];
+        this.activeConstellation = null;
+        this.constellationRevealProgress = 0;
         this.mouse = { x: -1000, y: -1000, vx: 0, vy: 0 };
-        this.lastMousePos = { x: 0, y: 0 };
         this.time = 0;
         this.animationId = null;
         this.isInitialized = false;
+        this.heroHeight = window.innerHeight;
 
         this.init();
     }
@@ -52,6 +58,7 @@ export class StellarEngine {
         this.createSVGFilters();
         this.createStars();
         if (this.config.enableNebulae) this.createNebulae();
+        if (this.config.enableGeekConstellations) this.createGeekConstellations();
         this.bindEvents();
         this.animate();
         this.isInitialized = true;
@@ -62,7 +69,6 @@ export class StellarEngine {
     }
 
     createCanvas() {
-        // Supprimer l'ancien canvas s'il existe
         const existingCanvas = document.querySelector('.stellar-canvas');
         if (existingCanvas) existingCanvas.remove();
 
@@ -83,7 +89,6 @@ export class StellarEngine {
     }
 
     createSVGFilters() {
-        // Créer les filtres SVG pour l'effet glow
         const existingSVG = document.getElementById('stellar-filters');
         if (existingSVG) existingSVG.remove();
 
@@ -99,25 +104,14 @@ export class StellarEngine {
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
-                <filter id="intensiveGlow" x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur stdDeviation="8" result="blur1"/>
-                    <feGaussianBlur stdDeviation="4" result="blur2"/>
-                    <feGaussianBlur stdDeviation="2" result="blur3"/>
+                <filter id="constellationGlow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="6" result="blur"/>
                     <feMerge>
-                        <feMergeNode in="blur1"/>
-                        <feMergeNode in="blur2"/>
-                        <feMergeNode in="blur3"/>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="blur"/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
-                <radialGradient id="nebulaGradient1" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:0.3"/>
-                    <stop offset="100%" style="stop-color:#4a90e2;stop-opacity:0"/>
-                </radialGradient>
-                <radialGradient id="nebulaGradient2" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.2"/>
-                    <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0"/>
-                </radialGradient>
             </defs>
         `;
         document.body.appendChild(svg);
@@ -130,6 +124,207 @@ export class StellarEngine {
         this.ctx.scale(dpr, dpr);
         this.width = window.innerWidth;
         this.height = window.innerHeight;
+        this.heroHeight = window.innerHeight;
+    }
+
+    // ============================================
+    // GEEK CONSTELLATIONS - Easter Eggs Cachés
+    // ============================================
+    createGeekConstellations() {
+        this.geekConstellations = [];
+
+        // Définir les symboles geek avec leurs points
+        const symbols = [
+            {
+                name: 'code-brackets',
+                message: '< / >',
+                points: this.createCodeBracketsPoints(),
+                color: '#4a90e2',
+                zone: { x: 0.1, y: 0.2, w: 0.25, h: 0.5 }
+            },
+            {
+                name: 'curly-braces',
+                message: '{ }',
+                points: this.createCurlyBracesPoints(),
+                color: '#a855f7',
+                zone: { x: 0.7, y: 0.15, w: 0.25, h: 0.5 }
+            },
+            {
+                name: 'binary',
+                message: '01',
+                points: this.createBinaryPoints(),
+                color: '#10b981',
+                zone: { x: 0.35, y: 0.6, w: 0.3, h: 0.35 }
+            },
+            {
+                name: 'terminal',
+                message: '>_',
+                points: this.createTerminalPoints(),
+                color: '#f59e0b',
+                zone: { x: 0.05, y: 0.7, w: 0.2, h: 0.25 }
+            },
+            {
+                name: 'hashtag',
+                message: '#DEV',
+                points: this.createHashtagPoints(),
+                color: '#ec4899',
+                zone: { x: 0.75, y: 0.65, w: 0.2, h: 0.3 }
+            }
+        ];
+
+        symbols.forEach(symbol => {
+            const constellation = {
+                name: symbol.name,
+                message: symbol.message,
+                color: symbol.color,
+                stars: [],
+                connections: [],
+                isRevealed: false,
+                revealProgress: 0,
+                zone: symbol.zone,
+                centerX: 0,
+                centerY: 0
+            };
+
+            // Calculer le centre de la zone
+            const zoneX = symbol.zone.x * this.width;
+            const zoneY = symbol.zone.y * this.heroHeight;
+            const zoneW = symbol.zone.w * this.width;
+            const zoneH = symbol.zone.h * this.heroHeight;
+
+            constellation.centerX = zoneX + zoneW / 2;
+            constellation.centerY = zoneY + zoneH / 2;
+
+            // Créer les étoiles de la constellation
+            symbol.points.forEach((point, index) => {
+                const star = {
+                    x: zoneX + point.x * zoneW,
+                    y: zoneY + point.y * zoneH,
+                    baseX: zoneX + point.x * zoneW,
+                    baseY: zoneY + point.y * zoneH,
+                    size: 2 + Math.random() * 1.5,
+                    baseSize: 2 + Math.random() * 1.5,
+                    alpha: 0.15, // Très faible au départ
+                    baseAlpha: 0.15,
+                    targetAlpha: 0.9,
+                    color: symbol.color,
+                    pulsePhase: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.03 + Math.random() * 0.02,
+                    index: index,
+                    isConstellation: true
+                };
+                constellation.stars.push(star);
+            });
+
+            // Créer les connexions entre étoiles
+            if (symbol.points.length > 1) {
+                for (let i = 0; i < symbol.points.length - 1; i++) {
+                    if (symbol.points[i].connectTo !== undefined) {
+                        constellation.connections.push({
+                            from: i,
+                            to: symbol.points[i].connectTo
+                        });
+                    } else {
+                        constellation.connections.push({
+                            from: i,
+                            to: i + 1
+                        });
+                    }
+                }
+            }
+
+            this.geekConstellations.push(constellation);
+        });
+    }
+
+    // Points pour < / >
+    createCodeBracketsPoints() {
+        return [
+            // <
+            { x: 0.15, y: 0.3 },
+            { x: 0.05, y: 0.5, connectTo: 0 },
+            { x: 0.15, y: 0.7, connectTo: 1 },
+            // /
+            { x: 0.35, y: 0.7, connectTo: null },
+            { x: 0.45, y: 0.3, connectTo: 3 },
+            // >
+            { x: 0.65, y: 0.3, connectTo: null },
+            { x: 0.75, y: 0.5, connectTo: 5 },
+            { x: 0.65, y: 0.7, connectTo: 6 }
+        ];
+    }
+
+    // Points pour { }
+    createCurlyBracesPoints() {
+        return [
+            // {
+            { x: 0.2, y: 0.2 },
+            { x: 0.1, y: 0.3, connectTo: 0 },
+            { x: 0.1, y: 0.45, connectTo: 1 },
+            { x: 0.0, y: 0.5, connectTo: 2 },
+            { x: 0.1, y: 0.55, connectTo: 3 },
+            { x: 0.1, y: 0.7, connectTo: 4 },
+            { x: 0.2, y: 0.8, connectTo: 5 },
+            // }
+            { x: 0.8, y: 0.2, connectTo: null },
+            { x: 0.9, y: 0.3, connectTo: 7 },
+            { x: 0.9, y: 0.45, connectTo: 8 },
+            { x: 1.0, y: 0.5, connectTo: 9 },
+            { x: 0.9, y: 0.55, connectTo: 10 },
+            { x: 0.9, y: 0.7, connectTo: 11 },
+            { x: 0.8, y: 0.8, connectTo: 12 }
+        ];
+    }
+
+    // Points pour 01 (binaire)
+    createBinaryPoints() {
+        return [
+            // 0
+            { x: 0.15, y: 0.2 },
+            { x: 0.25, y: 0.2, connectTo: 0 },
+            { x: 0.3, y: 0.35, connectTo: 1 },
+            { x: 0.3, y: 0.65, connectTo: 2 },
+            { x: 0.25, y: 0.8, connectTo: 3 },
+            { x: 0.15, y: 0.8, connectTo: 4 },
+            { x: 0.1, y: 0.65, connectTo: 5 },
+            { x: 0.1, y: 0.35, connectTo: 6 },
+            { x: 0.15, y: 0.2, connectTo: 7 },
+            // 1
+            { x: 0.55, y: 0.3, connectTo: null },
+            { x: 0.65, y: 0.2, connectTo: 9 },
+            { x: 0.65, y: 0.8, connectTo: 10 },
+            { x: 0.55, y: 0.8, connectTo: null },
+            { x: 0.75, y: 0.8, connectTo: 12 }
+        ];
+    }
+
+    // Points pour >_ (terminal)
+    createTerminalPoints() {
+        return [
+            // >
+            { x: 0.1, y: 0.2 },
+            { x: 0.4, y: 0.5, connectTo: 0 },
+            { x: 0.1, y: 0.8, connectTo: 1 },
+            // _
+            { x: 0.5, y: 0.8, connectTo: null },
+            { x: 0.9, y: 0.8, connectTo: 3 }
+        ];
+    }
+
+    // Points pour # (hashtag)
+    createHashtagPoints() {
+        return [
+            // Lignes verticales
+            { x: 0.35, y: 0.1 },
+            { x: 0.3, y: 0.9, connectTo: 0 },
+            { x: 0.65, y: 0.1, connectTo: null },
+            { x: 0.7, y: 0.9, connectTo: 2 },
+            // Lignes horizontales
+            { x: 0.1, y: 0.35, connectTo: null },
+            { x: 0.9, y: 0.3, connectTo: 4 },
+            { x: 0.1, y: 0.65, connectTo: null },
+            { x: 0.9, y: 0.7, connectTo: 6 }
+        ];
     }
 
     createStars() {
@@ -145,29 +340,25 @@ export class StellarEngine {
                 y: Math.random() * this.height,
                 baseX: 0,
                 baseY: 0,
-                z: layer, // Profondeur pour parallaxe
+                z: layer,
                 size: this.getStarSize(layer, starType),
                 baseSize: 0,
                 color: this.getStarColor(layer, colors),
                 alpha: this.getStarAlpha(layer),
                 baseAlpha: 0,
                 type: starType,
-                // Animation properties
                 pulsePhase: Math.random() * Math.PI * 2,
                 pulseSpeed: 0.02 + Math.random() * 0.03,
                 twinklePhase: Math.random() * Math.PI * 2,
                 twinkleSpeed: 0.05 + Math.random() * 0.1,
-                // Mouvement lent
                 vx: (Math.random() - 0.5) * 0.3 * (1 - layer),
                 vy: (Math.random() - 0.5) * 0.3 * (1 - layer),
-                // Interaction
                 isHovered: false,
                 hoverIntensity: 0,
                 attractionX: 0,
                 attractionY: 0
             });
 
-            // Stocker les valeurs de base
             const star = this.stars[this.stars.length - 1];
             star.baseX = star.x;
             star.baseY = star.y;
@@ -175,33 +366,42 @@ export class StellarEngine {
             star.baseAlpha = star.alpha;
         }
 
-        // Trier par profondeur pour le rendu correct
         this.stars.sort((a, b) => a.z - b.z);
     }
 
     getRandomStarType() {
         const rand = Math.random();
-        if (rand < 0.6) return 'normal';
-        if (rand < 0.8) return 'pulsing';
-        if (rand < 0.92) return 'twinkling';
-        return 'bright'; // Étoiles brillantes rares
+        if (rand < 0.65) return 'normal';
+        if (rand < 0.82) return 'pulsing';
+        if (rand < 0.94) return 'twinkling';
+        return 'bright';
     }
 
     getStarSize(layer, type) {
-        let baseSize = 0.5 + layer * 2.5;
-        if (type === 'bright') baseSize *= 2;
-        if (type === 'pulsing') baseSize *= 1.3;
+        let baseSize = 0.4 + layer * 2;
+        if (type === 'bright') baseSize *= 1.8;
+        if (type === 'pulsing') baseSize *= 1.2;
         return baseSize;
     }
 
     getStarColor(layer, colors) {
-        if (layer > 0.9) return colors[Math.floor(Math.random() * 2)]; // Proche = coloré
+        if (layer > 0.9) return colors[Math.floor(Math.random() * 2)];
         if (layer > 0.7) return Math.random() > 0.5 ? colors[0] : '#ffffff';
-        return '#ffffff'; // Lointain = blanc
+        return '#ffffff';
     }
 
     getStarAlpha(layer) {
-        return 0.3 + layer * 0.7;
+        return 0.2 + layer * 0.6;
+    }
+
+    // Calcul du facteur de dimming selon la zone
+    getZoneDimming(y) {
+        if (y < this.heroHeight) {
+            // Dans la zone hero, réduire l'intensité
+            const heroProgress = y / this.heroHeight;
+            return this.config.heroZoneDimming + (1 - this.config.heroZoneDimming) * heroProgress * 0.5;
+        }
+        return 1;
     }
 
     createNebulae() {
@@ -212,9 +412,9 @@ export class StellarEngine {
             this.nebulae.push({
                 x: Math.random() * this.width,
                 y: Math.random() * this.height,
-                radius: 100 + Math.random() * 200,
+                radius: 80 + Math.random() * 150,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                alpha: 0.03 + Math.random() * 0.05,
+                alpha: 0.02 + Math.random() * 0.03,
                 pulsePhase: Math.random() * Math.PI * 2,
                 pulseSpeed: 0.005 + Math.random() * 0.01,
                 driftX: (Math.random() - 0.5) * 0.1,
@@ -228,12 +428,10 @@ export class StellarEngine {
         let x, y, angle;
 
         if (startEdge < 0.5) {
-            // Depuis le haut
             x = Math.random() * this.width;
             y = -20;
             angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
         } else {
-            // Depuis la droite
             x = this.width + 20;
             y = Math.random() * this.height * 0.5;
             angle = Math.PI * 0.75 + (Math.random() - 0.5) * 0.3;
@@ -267,7 +465,9 @@ export class StellarEngine {
     bindEvents() {
         window.addEventListener('resize', () => {
             this.resize();
-            this.redistributeStars();
+            if (this.config.enableGeekConstellations) {
+                this.createGeekConstellations();
+            }
         });
 
         if (this.config.enableMouseInteraction) {
@@ -276,6 +476,11 @@ export class StellarEngine {
                 this.mouse.vy = e.clientY - this.mouse.y;
                 this.mouse.x = e.clientX;
                 this.mouse.y = e.clientY;
+
+                // Vérifier les constellations geek
+                if (this.config.enableGeekConstellations) {
+                    this.checkConstellationProximity();
+                }
             });
 
             document.addEventListener('mouseleave', () => {
@@ -285,24 +490,43 @@ export class StellarEngine {
         }
     }
 
-    redistributeStars() {
-        this.stars.forEach(star => {
-            star.x = (star.baseX / this.width) * window.innerWidth;
-            star.y = (star.baseY / this.height) * window.innerHeight;
-            star.baseX = star.x;
-            star.baseY = star.y;
+    checkConstellationProximity() {
+        let closestConstellation = null;
+        let closestDistance = Infinity;
+
+        this.geekConstellations.forEach(constellation => {
+            const dx = this.mouse.x - constellation.centerX;
+            const dy = this.mouse.y - constellation.centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            const activationRadius = Math.min(
+                constellation.zone.w * this.width,
+                constellation.zone.h * this.heroHeight
+            ) * 0.6;
+
+            if (distance < activationRadius && distance < closestDistance) {
+                closestDistance = distance;
+                closestConstellation = constellation;
+            }
         });
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+
+        // Activer/désactiver les constellations
+        this.geekConstellations.forEach(constellation => {
+            if (constellation === closestConstellation) {
+                constellation.isRevealed = true;
+            } else {
+                constellation.isRevealed = false;
+            }
+        });
+
+        this.activeConstellation = closestConstellation;
     }
 
     updateStars() {
         this.stars.forEach(star => {
-            // Mouvement de base
             star.x += star.vx;
             star.y += star.vy;
 
-            // Rebond aux bords
             if (star.x < -50) star.x = this.width + 50;
             if (star.x > this.width + 50) star.x = -50;
             if (star.y < -50) star.y = this.height + 50;
@@ -312,7 +536,7 @@ export class StellarEngine {
             switch (star.type) {
                 case 'pulsing':
                     star.pulsePhase += star.pulseSpeed;
-                    star.size = star.baseSize * (1 + 0.4 * Math.sin(star.pulsePhase));
+                    star.size = star.baseSize * (1 + 0.3 * Math.sin(star.pulsePhase));
                     star.alpha = star.baseAlpha * (0.7 + 0.3 * Math.sin(star.pulsePhase));
                     break;
                 case 'twinkling':
@@ -322,7 +546,7 @@ export class StellarEngine {
                     break;
                 case 'bright':
                     star.pulsePhase += star.pulseSpeed * 0.5;
-                    star.size = star.baseSize * (1 + 0.2 * Math.sin(star.pulsePhase));
+                    star.size = star.baseSize * (1 + 0.15 * Math.sin(star.pulsePhase));
                     break;
             }
 
@@ -335,40 +559,56 @@ export class StellarEngine {
 
                 if (distance < influenceRadius) {
                     const influence = 1 - (distance / influenceRadius);
-                    const easeInfluence = influence * influence * influence; // Ease cubic
-
-                    // Effet d'attraction/répulsion
-                    const attractionStrength = 30 * easeInfluence * star.z;
+                    const easeInfluence = influence * influence * influence;
+                    const attractionStrength = 25 * easeInfluence * star.z;
                     star.attractionX = (dx / distance) * attractionStrength;
                     star.attractionY = (dy / distance) * attractionStrength;
-
-                    // Intensification de la brillance
-                    star.hoverIntensity = Math.min(1, star.hoverIntensity + 0.15);
-                    star.isHovered = true;
+                    star.hoverIntensity = Math.min(1, star.hoverIntensity + 0.12);
                 } else {
                     star.attractionX *= 0.92;
                     star.attractionY *= 0.92;
-                    star.hoverIntensity = Math.max(0, star.hoverIntensity - 0.05);
-                    star.isHovered = false;
+                    star.hoverIntensity = Math.max(0, star.hoverIntensity - 0.04);
                 }
             }
         });
     }
 
+    updateGeekConstellations() {
+        this.geekConstellations.forEach(constellation => {
+            // Animation de révélation progressive
+            if (constellation.isRevealed) {
+                constellation.revealProgress = Math.min(1, constellation.revealProgress + 0.04);
+            } else {
+                constellation.revealProgress = Math.max(0, constellation.revealProgress - 0.02);
+            }
+
+            // Mettre à jour les étoiles de la constellation
+            constellation.stars.forEach(star => {
+                star.pulsePhase += star.pulseSpeed;
+
+                // Alpha basé sur la révélation
+                const targetAlpha = constellation.isRevealed ? star.targetAlpha : star.baseAlpha;
+                star.alpha += (targetAlpha - star.alpha) * 0.08;
+
+                // Pulsation quand révélé
+                if (constellation.revealProgress > 0.5) {
+                    star.size = star.baseSize * (1 + 0.3 * Math.sin(star.pulsePhase) * constellation.revealProgress);
+                }
+            });
+        });
+    }
+
     updateShootingStars() {
         this.shootingStars = this.shootingStars.filter(star => {
-            // Ajouter position au trail
             star.trail.unshift({ x: star.x, y: star.y, alpha: star.alpha });
             if (star.trail.length > star.maxTrailLength) {
                 star.trail.pop();
             }
 
-            // Mouvement
             star.x += star.vx;
             star.y += star.vy;
-            star.vy += 0.1; // Gravité légère
+            star.vy += 0.1;
 
-            // Fade out progressif
             if (star.x > this.width + 100 || star.y > this.height + 100 || star.x < -200) {
                 star.alpha -= 0.03;
             }
@@ -383,7 +623,6 @@ export class StellarEngine {
             nebula.x += nebula.driftX;
             nebula.y += nebula.driftY;
 
-            // Wrap around
             if (nebula.x < -nebula.radius) nebula.x = this.width + nebula.radius;
             if (nebula.x > this.width + nebula.radius) nebula.x = -nebula.radius;
             if (nebula.y < -nebula.radius) nebula.y = this.height + nebula.radius;
@@ -392,36 +631,26 @@ export class StellarEngine {
     }
 
     draw() {
-        // Clear avec un léger fade pour effet de traînée
-        this.ctx.fillStyle = 'rgba(8, 12, 17, 0.15)';
+        this.ctx.fillStyle = 'rgba(8, 12, 17, 0.12)';
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Dessiner les nébuleuses (arrière-plan)
-        if (this.config.enableNebulae) {
-            this.drawNebulae();
-        }
-
-        // Dessiner les constellations (lignes entre étoiles proches)
-        if (this.config.enableConstellations) {
-            this.drawConstellations();
-        }
-
-        // Dessiner les étoiles
+        if (this.config.enableNebulae) this.drawNebulae();
+        if (this.config.enableConstellations) this.drawConstellations();
+        if (this.config.enableGeekConstellations) this.drawGeekConstellations();
         this.drawStars();
-
-        // Dessiner les étoiles filantes
         this.drawShootingStars();
     }
 
     drawNebulae() {
         this.nebulae.forEach(nebula => {
-            const pulse = 1 + 0.2 * Math.sin(nebula.pulsePhase);
+            const pulse = 1 + 0.15 * Math.sin(nebula.pulsePhase);
+            const dimming = this.getZoneDimming(nebula.y);
             const gradient = this.ctx.createRadialGradient(
                 nebula.x, nebula.y, 0,
                 nebula.x, nebula.y, nebula.radius * pulse
             );
 
-            const alpha = nebula.alpha * (0.8 + 0.2 * Math.sin(nebula.pulsePhase * 2));
+            const alpha = nebula.alpha * dimming * (0.8 + 0.2 * Math.sin(nebula.pulsePhase * 2));
             gradient.addColorStop(0, this.hexToRgba(nebula.color, alpha));
             gradient.addColorStop(0.5, this.hexToRgba(nebula.color, alpha * 0.3));
             gradient.addColorStop(1, 'transparent');
@@ -434,13 +663,13 @@ export class StellarEngine {
     }
 
     drawConstellations() {
-        const nearbyStars = this.stars.filter(s => s.z > 0.6); // Seulement les étoiles proches
+        const nearbyStars = this.stars.filter(s => s.z > 0.6);
 
-        this.ctx.strokeStyle = 'rgba(74, 144, 226, 0.08)';
         this.ctx.lineWidth = 0.5;
 
         for (let i = 0; i < nearbyStars.length; i++) {
             const star1 = nearbyStars[i];
+            const dimming1 = this.getZoneDimming(star1.y);
             const displayX1 = star1.x + star1.attractionX;
             const displayY1 = star1.y + star1.attractionY;
 
@@ -454,11 +683,9 @@ export class StellarEngine {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < this.config.constellationDistance) {
-                    const alpha = (1 - distance / this.config.constellationDistance) * 0.15;
-
-                    // Intensifier si une étoile est hover
+                    const alpha = (1 - distance / this.config.constellationDistance) * 0.12 * dimming1;
                     const hoverBoost = Math.max(star1.hoverIntensity, star2.hoverIntensity);
-                    const finalAlpha = alpha + hoverBoost * 0.3;
+                    const finalAlpha = alpha + hoverBoost * 0.2;
 
                     this.ctx.strokeStyle = `rgba(74, 144, 226, ${finalAlpha})`;
                     this.ctx.beginPath();
@@ -470,25 +697,106 @@ export class StellarEngine {
         }
     }
 
+    drawGeekConstellations() {
+        this.geekConstellations.forEach(constellation => {
+            if (constellation.revealProgress <= 0) return;
+
+            const progress = constellation.revealProgress;
+
+            // Dessiner les connexions
+            this.ctx.lineWidth = 1.5 * progress;
+            this.ctx.lineCap = 'round';
+
+            constellation.connections.forEach((conn, index) => {
+                const star1 = constellation.stars[conn.from];
+                const star2 = constellation.stars[conn.to];
+                if (!star1 || !star2) return;
+
+                const connectionProgress = Math.min(1, progress * 1.5 - index * 0.05);
+                if (connectionProgress <= 0) return;
+
+                const gradient = this.ctx.createLinearGradient(star1.x, star1.y, star2.x, star2.y);
+                gradient.addColorStop(0, this.hexToRgba(constellation.color, 0.6 * connectionProgress));
+                gradient.addColorStop(0.5, this.hexToRgba(constellation.color, 0.8 * connectionProgress));
+                gradient.addColorStop(1, this.hexToRgba(constellation.color, 0.6 * connectionProgress));
+
+                this.ctx.strokeStyle = gradient;
+                this.ctx.beginPath();
+                this.ctx.moveTo(star1.x, star1.y);
+                this.ctx.lineTo(star2.x, star2.y);
+                this.ctx.stroke();
+
+                // Glow effect
+                if (progress > 0.5) {
+                    this.ctx.strokeStyle = this.hexToRgba(constellation.color, 0.2 * connectionProgress);
+                    this.ctx.lineWidth = 4 * progress;
+                    this.ctx.stroke();
+                }
+            });
+
+            // Dessiner les étoiles de la constellation
+            constellation.stars.forEach(star => {
+                const glowSize = star.size * (2 + progress * 2);
+                const glowGradient = this.ctx.createRadialGradient(
+                    star.x, star.y, 0,
+                    star.x, star.y, glowSize
+                );
+                glowGradient.addColorStop(0, this.hexToRgba(constellation.color, star.alpha * 0.8));
+                glowGradient.addColorStop(0.5, this.hexToRgba(constellation.color, star.alpha * 0.3));
+                glowGradient.addColorStop(1, 'transparent');
+
+                this.ctx.fillStyle = glowGradient;
+                this.ctx.beginPath();
+                this.ctx.arc(star.x, star.y, glowSize, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Core
+                this.ctx.fillStyle = this.hexToRgba('#ffffff', star.alpha);
+                this.ctx.beginPath();
+                this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                this.ctx.fill();
+            });
+
+            // Afficher le message quand révélé
+            if (progress > 0.7) {
+                const messageAlpha = (progress - 0.7) / 0.3;
+                this.ctx.font = `bold ${18 + progress * 6}px "Space Grotesk", monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+
+                // Glow du texte
+                this.ctx.shadowColor = constellation.color;
+                this.ctx.shadowBlur = 20 * messageAlpha;
+                this.ctx.fillStyle = this.hexToRgba(constellation.color, messageAlpha * 0.9);
+                this.ctx.fillText(
+                    constellation.message,
+                    constellation.centerX,
+                    constellation.centerY + (constellation.zone.h * this.heroHeight * 0.45)
+                );
+                this.ctx.shadowBlur = 0;
+            }
+        });
+    }
+
     drawStars() {
         this.stars.forEach(star => {
             const displayX = star.x + star.attractionX;
             const displayY = star.y + star.attractionY;
+            const dimming = this.getZoneDimming(star.y);
             const hoverBoost = star.hoverIntensity;
 
-            // Taille avec effet hover
-            const size = star.size * (1 + hoverBoost * 0.8);
-            const alpha = Math.min(1, star.alpha * (1 + hoverBoost * 0.5));
+            const size = star.size * (1 + hoverBoost * 0.6);
+            const alpha = Math.min(1, star.alpha * dimming * (1 + hoverBoost * 0.4));
 
-            // Glow externe pour étoiles brillantes ou hover
+            // Glow pour étoiles brillantes
             if (star.type === 'bright' || hoverBoost > 0.3) {
-                const glowSize = size * (3 + hoverBoost * 2);
+                const glowSize = size * (2.5 + hoverBoost * 1.5);
                 const glowGradient = this.ctx.createRadialGradient(
                     displayX, displayY, 0,
                     displayX, displayY, glowSize
                 );
-                glowGradient.addColorStop(0, this.hexToRgba(star.color, 0.4 * alpha));
-                glowGradient.addColorStop(0.3, this.hexToRgba(star.color, 0.15 * alpha));
+                glowGradient.addColorStop(0, this.hexToRgba(star.color, 0.3 * alpha));
+                glowGradient.addColorStop(0.3, this.hexToRgba(star.color, 0.1 * alpha));
                 glowGradient.addColorStop(1, 'transparent');
 
                 this.ctx.fillStyle = glowGradient;
@@ -497,18 +805,18 @@ export class StellarEngine {
                 this.ctx.fill();
             }
 
-            // Halo moyen
-            if (size > 1.5 || hoverBoost > 0) {
+            // Halo
+            if (size > 1.2 || hoverBoost > 0) {
                 const haloGradient = this.ctx.createRadialGradient(
                     displayX, displayY, 0,
-                    displayX, displayY, size * 2
+                    displayX, displayY, size * 1.8
                 );
-                haloGradient.addColorStop(0, this.hexToRgba(star.color, 0.5 * alpha));
+                haloGradient.addColorStop(0, this.hexToRgba(star.color, 0.4 * alpha));
                 haloGradient.addColorStop(1, 'transparent');
 
                 this.ctx.fillStyle = haloGradient;
                 this.ctx.beginPath();
-                this.ctx.arc(displayX, displayY, size * 2, 0, Math.PI * 2);
+                this.ctx.arc(displayX, displayY, size * 1.8, 0, Math.PI * 2);
                 this.ctx.fill();
             }
 
@@ -518,57 +826,21 @@ export class StellarEngine {
             this.ctx.fillStyle = this.hexToRgba(star.color, alpha);
             this.ctx.fill();
 
-            // Point central brillant
-            if (size > 1) {
+            // Point central
+            if (size > 0.8) {
                 this.ctx.beginPath();
-                this.ctx.arc(displayX, displayY, size * 0.4, 0, Math.PI * 2);
+                this.ctx.arc(displayX, displayY, size * 0.35, 0, Math.PI * 2);
                 this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                 this.ctx.fill();
-            }
-
-            // Rayons pour étoiles brillantes
-            if (star.type === 'bright' || hoverBoost > 0.5) {
-                this.drawStarRays(displayX, displayY, size, star.color, alpha, hoverBoost);
             }
         });
     }
 
-    drawStarRays(x, y, size, color, alpha, hoverBoost) {
-        const rayLength = size * (4 + hoverBoost * 3);
-        const rayWidth = size * 0.3;
-        const rotation = this.time * 0.001;
-
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.rotate(rotation);
-
-        for (let i = 0; i < 4; i++) {
-            const angle = (i * Math.PI) / 2;
-            const gradient = this.ctx.createLinearGradient(0, 0, rayLength, 0);
-            gradient.addColorStop(0, this.hexToRgba(color, alpha * 0.8));
-            gradient.addColorStop(1, 'transparent');
-
-            this.ctx.save();
-            this.ctx.rotate(angle);
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, -rayWidth / 2);
-            this.ctx.lineTo(rayLength, 0);
-            this.ctx.lineTo(0, rayWidth / 2);
-            this.ctx.closePath();
-            this.ctx.fill();
-            this.ctx.restore();
-        }
-
-        this.ctx.restore();
-    }
-
     drawShootingStars() {
         this.shootingStars.forEach(star => {
-            // Traînée
             star.trail.forEach((point, index) => {
                 const progress = index / star.trail.length;
-                const trailAlpha = (1 - progress) * star.alpha * 0.6;
+                const trailAlpha = (1 - progress) * star.alpha * 0.5;
                 const trailWidth = star.width * (1 - progress * 0.8);
 
                 const gradient = this.ctx.createRadialGradient(
@@ -584,7 +856,7 @@ export class StellarEngine {
                 this.ctx.fill();
             });
 
-            // Tête lumineuse
+            // Tête
             const headGradient = this.ctx.createRadialGradient(
                 star.x, star.y, 0,
                 star.x, star.y, star.width * 4
@@ -598,7 +870,6 @@ export class StellarEngine {
             this.ctx.arc(star.x, star.y, star.width * 4, 0, Math.PI * 2);
             this.ctx.fill();
 
-            // Point central
             this.ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
             this.ctx.beginPath();
             this.ctx.arc(star.x, star.y, star.width, 0, Math.PI * 2);
@@ -618,11 +889,12 @@ export class StellarEngine {
         this.updateStars();
         this.updateShootingStars();
         if (this.config.enableNebulae) this.updateNebulae();
+        if (this.config.enableGeekConstellations) this.updateGeekConstellations();
         this.draw();
         this.animationId = requestAnimationFrame(() => this.animate());
     }
 
-    // API publique pour contrôle externe
+    // API publique
     pause() {
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
@@ -644,6 +916,17 @@ export class StellarEngine {
         this.createShootingStar();
     }
 
+    // Révéler une constellation spécifique par nom
+    revealConstellation(name) {
+        const constellation = this.geekConstellations.find(c => c.name === name);
+        if (constellation) {
+            constellation.isRevealed = true;
+            setTimeout(() => {
+                constellation.isRevealed = false;
+            }, 3000);
+        }
+    }
+
     destroy() {
         this.pause();
         if (this.canvas) this.canvas.remove();
@@ -652,7 +935,6 @@ export class StellarEngine {
     }
 }
 
-// Auto-initialisation optionnelle
 export function initStellarEngine(options) {
     return new StellarEngine(options);
 }

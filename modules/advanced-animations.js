@@ -10,20 +10,22 @@ export class AdvancedAnimations {
 
     /**
      * Initialise le moteur stellaire avancé
-     * Remplace l'ancien système de particules basique
+     * Version 3.0 - Geek Edition avec constellations cachées
      */
     initializeStellarEngine() {
         // Configuration personnalisée pour le portfolio
         this.stellarEngine = new StellarEngine({
-            starCount: 400,                    // Nombre d'étoiles
-            shootingStarInterval: 4000,        // Étoile filante toutes les ~4-8 secondes
-            nebulaCount: 6,                    // Nébuleuses d'arrière-plan
-            constellationDistance: 100,        // Distance pour connecter les étoiles
-            mouseInfluenceRadius: 180,         // Rayon d'interaction souris
+            starCount: 300,                    // Nombre d'étoiles (réduit pour moins de saturation)
+            shootingStarInterval: 5000,        // Étoile filante toutes les ~5-9 secondes
+            nebulaCount: 4,                    // Nébuleuses réduites
+            constellationDistance: 90,         // Distance pour connecter les étoiles
+            mouseInfluenceRadius: 150,         // Rayon d'interaction souris
             enableConstellations: true,        // Lignes entre étoiles proches
             enableShootingStars: true,         // Étoiles filantes
             enableNebulae: true,               // Nuages cosmiques
             enableMouseInteraction: true,      // Réaction au curseur
+            enableGeekConstellations: true,    // EASTER EGG: Constellations geek cachées!
+            heroZoneDimming: 0.35,             // Réduction 65% dans la zone hero
             colorPalette: {
                 primary: '#4a90e2',            // Bleu primaire
                 secondary: '#6fa8dc',          // Bleu secondaire

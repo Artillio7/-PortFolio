@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx serve . -p 3000)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(portfolio): optimize performance, update content 2025 & improve UX\n\n- Add preconnect, preload for fonts and critical assets\n- Update meta tags with SEO keywords, Open Graph & Twitter Card\n- Rewrite About section with DevOps/Full-Stack expertise 2025\n- Add back-to-top button with smooth scroll\n- Add skip-to-content link for accessibility\n- Unify section backgrounds for seamless color transitions\n- Remove animated card effects (borderFlow, scanLine)\n- Fix CTA button hover (was white on white)\n- Add visual separator between contact info and form\n- Update footer to 2025\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

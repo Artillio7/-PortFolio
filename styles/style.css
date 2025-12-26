@@ -393,47 +393,8 @@ body.menu-open .content-blur {
     filter: blur(5px);
 }
 
-/* Styles d'image de profil avec effets dynamiques */
-.cyber-profile {
-    position: relative;
-    width: 50%;
-    max-width: 300px;
-    margin: 0 auto;
-    opacity: 0;
-    animation: fadeIn 1.5s ease-out forwards;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
-    box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
-}
-
-.profile-img {
-    width: 90%;
-    height: 90%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid var(--primary-color);
-    box-shadow: 0 0 25px rgba(74, 144, 226, 0.6);
-    transition: all 0.5s ease;
-    transform-origin: center;
-    filter: brightness(0.9) contrast(1.1);
-    position: relative;
-    z-index: 2;
-}
-
-.profile-img:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(74, 144, 226, 0.8);
-    filter: brightness(1.1);
-}
-
-/* cyber-scan-line - disabled animation */
-.cyber-scan-line {
-    display: none;
-}
+/* Anciens styles de profil - DÉPLACÉS vers section CYBER PROFILE plus bas */
+/* Voir ligne ~2325 pour les nouvelles animations spectaculaires */
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -465,25 +426,9 @@ body.menu-open .content-blur {
     position: relative;
 }
 
-/* Effet de particules flottantes en arrière-plan */
+/* Ancien effet de particules CSS - DÉSACTIVÉ (remplacé par Stellar Engine) */
 .welcome-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, var(--primary-color), transparent),
-        radial-gradient(2px 2px at 40px 70px, var(--secondary-color), transparent),
-        radial-gradient(1px 1px at 90px 40px, var(--primary-color), transparent),
-        radial-gradient(1px 1px at 130px 80px, var(--secondary-color), transparent),
-        radial-gradient(2px 2px at 160px 30px, var(--primary-color), transparent);
-    background-repeat: repeat;
-    background-size: 200px 100px;
-    animation: float 20s linear infinite;
-    opacity: 0.3;
-    z-index: 1;
+    display: none !important;
 }
 
 .welcome-content {
@@ -2322,66 +2267,137 @@ nav {
     gap: 4rem;
 }
 
+/* ============================================
+   CYBER PROFILE - Animation Spectaculaire
+   Niveau Senior 20+ ans - Effet WOW garanti
+   ============================================ */
+
 .cyber-profile {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid rgba(74, 144, 226, 0.3);
-    box-shadow: 
-        0 0 20px rgba(74, 144, 226, 0.2),
-        0 0 40px rgba(74, 144, 226, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Animation flottante continue */
+    animation: profile-float 6s ease-in-out infinite;
+    /* Pas d'overflow pour voir les anneaux orbitaux */
+    overflow: visible !important;
 }
 
+/* Aura énergétique pulsante */
 .cyber-profile::before {
     content: '';
     position: absolute;
-    inset: -5px;
-    background: conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        rgba(74, 144, 226, 0.8) 90deg,
-        transparent 180deg,
-        rgba(74, 144, 226, 0.8) 270deg,
-        transparent 360deg
-    );
-    animation: cyber-rotate 4s linear infinite;
+    width: 140%;
+    height: 140%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(74, 144, 226, 0.15) 0%,
+        rgba(74, 144, 226, 0.08) 30%,
+        rgba(168, 85, 247, 0.05) 50%,
+        transparent 70%);
+    animation: aura-pulse 4s ease-in-out infinite;
+    z-index: -1;
 }
 
+/* Anneau orbital externe */
 .cyber-profile::after {
     content: '';
     position: absolute;
-    inset: 2px;
-    background: #000;
+    width: 130%;
+    height: 130%;
     border-radius: 50%;
-    z-index: 1;
+    border: 2px solid transparent;
+    border-top-color: rgba(74, 144, 226, 0.6);
+    border-right-color: rgba(168, 85, 247, 0.4);
+    animation: orbit-spin 8s linear infinite;
+    z-index: 10;
 }
 
+/* Conteneur image avec effets */
 .profile-img {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 85%;
+    height: 85%;
     border-radius: 50%;
     object-fit: cover;
     z-index: 2;
+    /* Bordure lumineuse */
+    border: 3px solid rgba(74, 144, 226, 0.5);
+    /* Ombre multi-couches */
+    box-shadow:
+        0 0 20px rgba(74, 144, 226, 0.4),
+        0 0 40px rgba(74, 144, 226, 0.2),
+        0 0 60px rgba(168, 85, 247, 0.15),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    /* Filtre de base */
+    filter: brightness(1) contrast(1.05) saturate(1.1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Effet holographique au survol */
+.cyber-profile:hover .profile-img {
+    transform: scale(1.08);
+    border-color: rgba(168, 85, 247, 0.7);
+    box-shadow:
+        0 0 30px rgba(74, 144, 226, 0.6),
+        0 0 60px rgba(74, 144, 226, 0.4),
+        0 0 90px rgba(168, 85, 247, 0.3),
+        0 0 120px rgba(168, 85, 247, 0.15),
+        inset 0 0 40px rgba(74, 144, 226, 0.1);
+    filter: brightness(1.15) contrast(1.1) saturate(1.2);
+}
+
+/* Ligne de scan holographique */
 .cyber-scan-line {
     position: absolute;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(74, 144, 226, 0.8),
-        transparent
-    );
-    z-index: 3;
-    animation: cyber-scan-profile 2s linear infinite;
+    width: 90%;
+    height: 3px;
+    left: 5%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(74, 144, 226, 0.3) 20%,
+        rgba(74, 144, 226, 0.9) 50%,
+        rgba(74, 144, 226, 0.3) 80%,
+        transparent 100%);
+    border-radius: 50%;
+    z-index: 5;
+    animation: holographic-scan 3s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+    opacity: 0.8;
 }
 
-@keyframes cyber-rotate {
+/* === KEYFRAMES - Animations === */
+
+@keyframes profile-float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-12px) rotate(1deg);
+    }
+    50% {
+        transform: translateY(-5px) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-15px) rotate(-1deg);
+    }
+}
+
+@keyframes aura-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes orbit-spin {
     from {
         transform: rotate(0deg);
     }
@@ -2390,20 +2406,119 @@ nav {
     }
 }
 
-@keyframes cyber-scan-profile {
-    from {
-        top: 0;
+@keyframes holographic-scan {
+    0% {
+        top: 10%;
+        opacity: 0;
     }
-    to {
-        top: 100%;
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        top: 85%;
+        opacity: 0;
     }
 }
 
+/* Anneau orbital interne (ajouté via JS ou second élément) */
+.cyber-profile .orbit-ring {
+    position: absolute;
+    width: 115%;
+    height: 115%;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    border-bottom-color: rgba(168, 85, 247, 0.5);
+    border-left-color: rgba(74, 144, 226, 0.3);
+    animation: orbit-spin 5s linear infinite reverse;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Particules orbitales */
+.cyber-profile .orbital-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #4a90e2 0%, transparent 70%);
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4a90e2, 0 0 20px rgba(74, 144, 226, 0.5);
+    z-index: 11;
+    animation: particle-orbit 6s linear infinite;
+}
+
+.cyber-profile .orbital-particle:nth-child(2) {
+    animation-delay: -2s;
+    background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+    box-shadow: 0 0 10px #a855f7, 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+.cyber-profile .orbital-particle:nth-child(3) {
+    animation-delay: -4s;
+    width: 4px;
+    height: 4px;
+}
+
+@keyframes particle-orbit {
+    from {
+        transform: rotate(0deg) translateX(170px) rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg) translateX(170px) rotate(-360deg);
+    }
+}
+
+/* Effet glitch au survol */
+.cyber-profile:hover::before {
+    animation: aura-pulse 2s ease-in-out infinite, glitch-aura 0.3s ease infinite;
+}
+
+@keyframes glitch-aura {
+    0%, 100% {
+        clip-path: inset(0 0 0 0);
+    }
+    20% {
+        clip-path: inset(10% 0 80% 0);
+    }
+    40% {
+        clip-path: inset(50% 0 30% 0);
+    }
+    60% {
+        clip-path: inset(20% 0 60% 0);
+    }
+    80% {
+        clip-path: inset(70% 0 10% 0);
+    }
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 900px) {
     .welcome-content {
         flex-direction: column;
     }
-    
+
+    .cyber-profile {
+        width: 250px;
+        height: 250px;
+    }
+
+    .cyber-profile .orbital-particle {
+        animation: particle-orbit-mobile 6s linear infinite;
+    }
+
+    @keyframes particle-orbit-mobile {
+        from {
+            transform: rotate(0deg) translateX(135px) rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg) translateX(135px) rotate(-360deg);
+        }
+    }
+}
+
+@media (max-width: 600px) {
     .cyber-profile {
         width: 200px;
         height: 200px;
@@ -3160,9 +3275,32 @@ section#about p, section#services p, section#contact p {
 /* === Smooth gradient transitions between ALL sections === */
 /* All sections use very close color values for seamless flow */
 
-/* Welcome section - starts dark */
+/* Welcome section - TRANSPARENT pour étoiles filantes */
 .welcome-section {
-  background: #080c11 !important;
+  background: transparent !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* Vignette subtile pour contraste texte */
+.welcome-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 50%,
+    transparent 0%,
+    transparent 40%,
+    rgba(8, 12, 17, 0.2) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Portfolio section - same tone */

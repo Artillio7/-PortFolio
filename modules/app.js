@@ -208,24 +208,153 @@ new ResizeObserver((entries) => {
   }
 }).observe(document.body);
 
-const profileImg = document.querySelector('.profile-img');
-if (profileImg) {
-    // Add initial fade-in animation
+// ============================================
+// CYBER PROFILE - Animations Interactives Avancées
+// ============================================
+(function initCyberProfile() {
+    const cyberProfile = document.getElementById('cyber-profile');
+    const profileImg = document.querySelector('.profile-img');
+
+    if (!cyberProfile || !profileImg) return;
+
+    // Variables pour le tracking souris
+    let mouseX = 0, mouseY = 0;
+    let profileRect = cyberProfile.getBoundingClientRect();
+    let isHovering = false;
+
+    // Animation d'entrée spectaculaire
     profileImg.style.opacity = '0';
+    profileImg.style.transform = 'scale(0.8) rotateY(-30deg)';
+
     setTimeout(() => {
+        profileImg.style.transition = 'all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
         profileImg.style.opacity = '1';
-        profileImg.style.transform = 'scale(1)';
-    }, 500);
+        profileImg.style.transform = 'scale(1) rotateY(0deg)';
+    }, 300);
 
-    // Add hover effect
-    profileImg.addEventListener('mouseenter', () => {
-        profileImg.style.transform = 'scale(1.1)';
+    // Effet parallaxe 3D au mouvement de souris
+    document.addEventListener('mousemove', (e) => {
+        if (!isHovering) {
+            // Effet global subtil
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const deltaX = (e.clientX - centerX) / centerX;
+            const deltaY = (e.clientY - centerY) / centerY;
+
+            cyberProfile.style.transform = `
+                translateY(${Math.sin(Date.now() / 1000) * 10}px)
+                rotateY(${deltaX * 5}deg)
+                rotateX(${-deltaY * 5}deg)
+            `;
+        }
     });
 
-    profileImg.addEventListener('mouseleave', () => {
-        profileImg.style.transform = 'scale(1)';
+    // Effet intensif au survol du profil
+    cyberProfile.addEventListener('mouseenter', () => {
+        isHovering = true;
+        profileRect = cyberProfile.getBoundingClientRect();
+
+        // Déclencher une étoile filante (si disponible)
+        if (window.stellarEngine) {
+            window.stellarEngine.triggerShootingStar();
+        }
     });
-}
+
+    cyberProfile.addEventListener('mousemove', (e) => {
+        if (!isHovering) return;
+
+        const x = e.clientX - profileRect.left;
+        const y = e.clientY - profileRect.top;
+        const centerX = profileRect.width / 2;
+        const centerY = profileRect.height / 2;
+
+        const deltaX = (x - centerX) / centerX;
+        const deltaY = (y - centerY) / centerY;
+
+        // Transformation 3D dynamique
+        cyberProfile.style.transform = `
+            perspective(1000px)
+            rotateY(${deltaX * 15}deg)
+            rotateX(${-deltaY * 15}deg)
+            scale(1.05)
+        `;
+
+        // Déplacer la lumière sur l'image
+        profileImg.style.background = `
+            radial-gradient(
+                circle at ${x}px ${y}px,
+                rgba(74, 144, 226, 0.15) 0%,
+                transparent 50%
+            )
+        `;
+    });
+
+    cyberProfile.addEventListener('mouseleave', () => {
+        isHovering = false;
+        cyberProfile.style.transform = '';
+        profileImg.style.background = '';
+    });
+
+    // Effet de clic - pulse énergétique
+    cyberProfile.addEventListener('click', () => {
+        cyberProfile.style.animation = 'none';
+        cyberProfile.offsetHeight; // Reflow
+
+        // Créer une onde de choc
+        const shockwave = document.createElement('div');
+        shockwave.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: transparent;
+            border: 2px solid rgba(74, 144, 226, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: shockwave 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 20;
+        `;
+        cyberProfile.appendChild(shockwave);
+
+        setTimeout(() => shockwave.remove(), 800);
+
+        // Déclencher plusieurs étoiles filantes
+        if (window.stellarEngine) {
+            window.stellarEngine.triggerShootingStar();
+            setTimeout(() => window.stellarEngine.triggerShootingStar(), 200);
+        }
+
+        cyberProfile.style.animation = 'profile-float 6s ease-in-out infinite';
+    });
+
+    // Ajouter le keyframe shockwave dynamiquement
+    if (!document.getElementById('cyber-profile-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'cyber-profile-keyframes';
+        style.textContent = `
+            @keyframes shockwave {
+                0% {
+                    width: 10px;
+                    height: 10px;
+                    opacity: 1;
+                }
+                100% {
+                    width: 400px;
+                    height: 400px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Mise à jour de la position au resize
+    window.addEventListener('resize', () => {
+        profileRect = cyberProfile.getBoundingClientRect();
+    });
+})();
 
 // Smooth scroll
 document.querySelectorAll('.nav-link').forEach(link => {

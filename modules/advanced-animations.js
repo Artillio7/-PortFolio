@@ -14,17 +14,18 @@ export class AdvancedAnimations {
      */
     initializeStellarEngine() {
         // Configuration personnalisée pour le portfolio
+        const isMobile = window.innerWidth < 768;
         this.stellarEngine = new StellarEngine({
-            starCount: 300,                    // Nombre d'étoiles (réduit pour moins de saturation)
-            shootingStarInterval: 5000,        // Étoile filante toutes les ~5-9 secondes
-            nebulaCount: 4,                    // Nébuleuses réduites
-            constellationDistance: 90,         // Distance pour connecter les étoiles
+            starCount: isMobile ? 120 : 250,   // Réduit: 250 desktop, 120 mobile
+            shootingStarInterval: 6000,        // Étoile filante toutes les ~6-10 secondes
+            nebulaCount: isMobile ? 2 : 3,     // Nébuleuses réduites
+            constellationDistance: 80,          // Distance pour connecter les étoiles
             mouseInfluenceRadius: 150,         // Rayon d'interaction souris
-            enableConstellations: true,        // Lignes entre étoiles proches
+            enableConstellations: !isMobile,   // Désactivé sur mobile (GPU)
             enableShootingStars: true,         // Étoiles filantes
-            enableNebulae: true,               // Nuages cosmiques
-            enableMouseInteraction: true,      // Réaction au curseur
-            enableGeekConstellations: true,    // EASTER EGG: Constellations geek cachées!
+            enableNebulae: !isMobile,          // Désactivé sur mobile (GPU)
+            enableMouseInteraction: !isMobile, // Pas de souris sur mobile
+            enableGeekConstellations: !isMobile, // EASTER EGG: Desktop uniquement
             heroZoneDimming: 0.35,             // Réduction 65% dans la zone hero
             colorPalette: {
                 primary: '#4a90e2',            // Bleu primaire
@@ -46,11 +47,6 @@ export class AdvancedAnimations {
         });
     }
 
-    // Ancien système de particules (désactivé)
-    initializeParticles() {
-        // Remplacé par StellarEngine
-        console.log('Legacy particle system disabled - using StellarEngine');
-    }
 
     initializeTextEffects() {
         const texts = document.querySelectorAll('.animated-text');

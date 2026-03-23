@@ -29,7 +29,7 @@ export class ResourceManager {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
                     if (entry.entryType === 'largest-contentful-paint') {
-                        console.log(`LCP: ${entry.startTime}ms`);
+                        // LCP tracked silently
                     }
                 });
             });

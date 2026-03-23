@@ -1,0 +1,373 @@
+#!/usr/bin/env python3
+"""
+{{$NAME}} Autoresearch -- Self-improving optimization.
+
+Autoresearch pattern: Generate -> Evaluate -> Score -> Keep/Discard -> Mutate -> Repeat.
+{{$DESCRIPTION}}
+
+Usage:
+    python3 autoresearch.py              # Continuous loop
+    python3 autoresearch.py --once       # Single cycle
+    python3 autoresearch.py --cycles 5   # Run N cycles
+"""
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+import traceback
+from datetime import datetime
+from pathlib import Path
+
+# --- Auto-installation des dependances ----------------------------------------
+
+def _ensure_deps():
+    missing = []
+    for module, pip_name in {"dotenv": "python-dotenv"}.items():
+        try:
+            __import__(module)
+        except ImportError:
+            missing.append(pip_name)
+    if missing:
+        print(f"  Installation: {', '.join(missing)}")
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", "--quiet", *missing],
+            stdout=subprocess.DEVNULL,
+        )
+
+_ensure_deps()
+
+import functools
+print = functools.partial(print, flush=True)
+
+from dotenv import load_dotenv
+load_dotenv()
+
+# --- Config -------------------------------------------------------------------
+
+EVAL_MODEL = "{{$EVAL_MODEL}}"
+GEN_MODEL = "{{$GEN_MODEL}}"
+MUTATE_MODEL = "{{$MUTATE_MODEL}}"
+
+BASE_DIR = Path(__file__).resolve().parent / "data"
+SKILL_PROMPT_FILE = BASE_DIR / "skill_prompt.txt"
+BEST_PROMPT_FILE = BASE_DIR / "best_prompt.txt"
+STATE_FILE = BASE_DIR / "state.json"
+RESULTS_FILE = BASE_DIR / "results.jsonl"
+RUNS_DIR = BASE_DIR / "runs"
+
+CYCLE_SECONDS = {{$CYCLE_SECONDS}}
+MAX_SCORE = {{$MAX_SCORE}}
+REAL_SKILL_MD = "{{$SKILL_MD_PATH}}"
+
+# --- Criteria -----------------------------------------------------------------
+
+{{$CRITERIA_KEYS_LIST}}
+
+{{$CRITERIA_LABELS}}
+
+{{$CRITERIA_TRIGGERS}}
+
+# --- Topics -------------------------------------------------------------------
+
+{{$TOPICS_LIST}}
+
+# --- Eval Prompt (FROZEN -- never mutated) ------------------------------------
+
+{{$EVAL_PROMPT}}
+
+# --- Mutation Template --------------------------------------------------------
+
+{{$MUTATION_TEMPLATE}}
+
+# --- Helpers ------------------------------------------------------------------
+
+
+def load_state() -> dict:
+    if STATE_FILE.exists():
+        try:
+            text = STATE_FILE.read_text(encoding="utf-8").strip()
+            if text:
+                return json.loads(text)
+        except (json.JSONDecodeError, ValueError):
+            print("  WARN: state.json corrupt, reset")
+    return {"best_score": -1.0, "run_number": 0}
+
+
+def save_state(state: dict):
+    STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def load_prompt() -> str:
+    return SKILL_PROMPT_FILE.read_text(encoding="utf-8").strip()
+
+
+def save_prompt(prompt: str):
+    SKILL_PROMPT_FILE.write_text(prompt, encoding="utf-8")
+
+
+def _claude_cli(prompt: str, timeout: int = 120) -> str | None:
+    """Call Claude Code CLI and return text output."""
+    try:
+        result = subprocess.run(
+            ["claude", "-p", "-", "--output-format", "text"],
+            input=prompt, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=timeout,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+        if result.stderr:
+            print(f"    CLI stderr: {result.stderr[:200]}")
+        return None
+    except subprocess.TimeoutExpired:
+        print(f"    CLI: timeout after {timeout}s")
+        return None
+    except Exception as e:
+        print(f"    CLI ERROR: {e}")
+        return None
+
+
+def _extract_json(text: str) -> dict | None:
+    """Extract JSON object from a response (handles markdown fences)."""
+    if "```" in text:
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    start = text.find("{")
+    end = text.rfind("}")
+    if start >= 0 and end > start:
+        try:
+            return json.loads(text[start:end + 1])
+        except json.JSONDecodeError:
+            pass
+    return None
+
+
+# --- Generation ---------------------------------------------------------------
+
+{{$GENERATION_FUNCTION}}
+
+# --- Evaluation ---------------------------------------------------------------
+
+{{$EVALUATE_FUNCTION}}
+
+# --- Mutation -----------------------------------------------------------------
+
+
+def mutate_prompt(current_prompt: str, eval_result: dict, best_score: float) -> str:
+    """Mutate the skill prompt based on failure analysis."""
+    e = eval_result or {}
+    criteria_data = e.get("criteria", e)
+    score_pct = e.get("score_pct", 0)
+
+    all_failures = e.get("failures", [])
+    unique_failures = list(dict.fromkeys(all_failures))[:15]
+    failures_text = "\n".join(f"- {f}" for f in unique_failures) if unique_failures else "- Aucun"
+
+    # Build status dict for template
+    status = {}
+    for k in CRITERIA_KEYS:
+        val = criteria_data.get(k)
+        if val is None:
+            status[f"{k}_status"] = "SKIP"
+        elif val:
+            status[f"{k}_status"] = "PASS"
+        else:
+            status[f"{k}_status"] = "FAIL"
+
+    mutation_prompt = MUTATION_TEMPLATE.format(
+        current_prompt=current_prompt,
+        score=f"{score_pct:.1f}%",
+        failures=failures_text,
+        best_score=f"{best_score:.1f}%",
+        **status,
+    )
+
+    result = _claude_cli(mutation_prompt, timeout=90)
+    if not result:
+        return current_prompt
+
+    # YAML frontmatter preservation: check mutated prompt still has valid frontmatter
+    if current_prompt.strip().startswith("---") and "name:" in current_prompt[:200]:
+        if not result.strip().startswith("---") or "name:" not in result[:200]:
+            print("  WARN: Mutated prompt lost YAML frontmatter, keeping original")
+            return current_prompt
+
+    return result
+
+
+def sync_to_real_skill_md(prompt: str):
+    """If REAL_SKILL_MD is configured, copy best prompt there."""
+    if not REAL_SKILL_MD or not REAL_SKILL_MD.strip():
+        return
+    target = Path(REAL_SKILL_MD)
+    if target.parent.exists():
+        target.write_text(prompt, encoding="utf-8")
+        print(f"  Synced to real SKILL.md: {target}")
+
+
+# --- Main Cycle ---------------------------------------------------------------
+
+
+def run_cycle(state: dict) -> dict:
+    """Run one autoresearch optimization cycle."""
+    run_num = state["run_number"] + 1
+    state["run_number"] = run_num
+    run_dir = RUNS_DIR / f"run_{run_num:03d}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    prompt = load_prompt()
+    topic = TOPICS[(run_num - 1) % len(TOPICS)]
+
+    print(f"\n{'='*60}")
+    print(f"RUN {run_num} | {datetime.now().strftime('%H:%M:%S')} | Best: {state['best_score']:.1f}%")
+    print(f"Topic: {topic[:60]}")
+    print(f"{'='*60}")
+
+    # -- Generate --
+    print("\n  Generating...")
+    content = generate(prompt, topic, run_dir)
+
+    if not content:
+        print("  ERROR: Generation failed.")
+        log_entry = {
+            "run": run_num,
+            "timestamp": datetime.now().isoformat(),
+            "topic": topic,
+            "score_pct": 0,
+            "passed": 0,
+            "applicable": 0,
+            "criteria": {},
+            "failures": ["generation_failed"],
+            "prompt_len": len(prompt),
+        }
+        with open(RESULTS_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+        save_state(state)
+        return state
+
+    print(f"  Generated: {len(content)} chars")
+
+    # -- Evaluate --
+    print(f"\n  Evaluating ({len(CRITERIA_KEYS)} criteria)...")
+    eval_result = evaluate(content, topic, run_dir)
+
+    # -- Score --
+    e = eval_result or {}
+    criteria_data = e.get("criteria", {})
+    passed_count = e.get("passed", 0)
+    applicable_count = e.get("applicable", len(CRITERIA_KEYS))
+    score_pct = e.get("score_pct", 0.0)
+
+    print(f"\n  SCORE: {score_pct:.1f}% ({passed_count}/{applicable_count} applicable)")
+    for k in CRITERIA_KEYS:
+        val = criteria_data.get(k)
+        if val is None:
+            status = "SKIP"
+        elif val:
+            status = "PASS"
+        else:
+            status = "FAIL"
+        print(f"    {CRITERIA_LABELS.get(k, k)}: {status}")
+
+    # -- Log --
+    log_entry = {
+        "run": run_num,
+        "timestamp": datetime.now().isoformat(),
+        "topic": topic,
+        "score_pct": score_pct,
+        "passed": passed_count,
+        "applicable": applicable_count,
+        "criteria": {k: criteria_data.get(k) for k in CRITERIA_KEYS},
+        "failures": e.get("failures", [])[:10],
+        "prompt_len": len(prompt),
+    }
+    with open(RESULTS_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+    # -- Keep or discard --
+    if score_pct > state["best_score"]:
+        state["best_score"] = score_pct
+        BEST_PROMPT_FILE.write_text(prompt, encoding="utf-8")
+        print(f"\n  NEW BEST! {score_pct:.1f}%")
+        sync_to_real_skill_md(prompt)
+    else:
+        print(f"\n  No improvement ({score_pct:.1f}% vs best {state['best_score']:.1f}%)")
+
+    # -- Mutate --
+    if score_pct < 100.0:
+        print("\n  Mutating prompt...")
+        base_prompt = (
+            BEST_PROMPT_FILE.read_text(encoding="utf-8").strip()
+            if BEST_PROMPT_FILE.exists()
+            else prompt
+        )
+        new_prompt = mutate_prompt(base_prompt, eval_result, state["best_score"])
+        save_prompt(new_prompt)
+        print(f"  New prompt ({len(new_prompt)} chars)")
+    else:
+        print("\n  PERFECT 100%! Fully optimized.")
+
+    save_state(state)
+    return state
+
+
+# --- Entry Point --------------------------------------------------------------
+
+
+def main():
+    parser = argparse.ArgumentParser(description="{{$NAME}} autoresearch loop")
+    parser.add_argument("--once", action="store_true", help="Run a single cycle")
+    parser.add_argument("--cycles", type=int, default=0, help="Run N cycles (0=infinite)")
+    args = parser.parse_args()
+
+    BASE_DIR.mkdir(parents=True, exist_ok=True)
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+
+    state = load_state()
+
+    dash_path = Path(__file__).resolve().parent / "dashboard.py"
+
+    print("{{$NAME}} Autoresearch")
+    print(f"  Eval:     {EVAL_MODEL} (FROZEN)")
+    print(f"  Cycle:    {CYCLE_SECONDS}s")
+    print(f"  State:    run {state['run_number']}, best {state['best_score']:.1f}%")
+    print(f"  Topics:   {len(TOPICS)}")
+    print(f"  Criteria: {len(CRITERIA_KEYS)}")
+    print(f"  Auth:     OAuth (~/.claude/) -- no API key required")
+    print()
+    print(f"  Dashboard: python {dash_path}")
+    print(f"  Then open: http://localhost:{{$PORT}}")
+    print()
+
+    if args.once:
+        run_cycle(state)
+        return
+
+    max_cycles = args.cycles or float("inf")
+    i = 0
+    while i < max_cycles:
+        start = time.time()
+        try:
+            state = run_cycle(state)
+        except Exception as e:
+            print(f"\n  CYCLE ERROR: {e}")
+            traceback.print_exc()
+        elapsed = time.time() - start
+        i += 1
+
+        if i < max_cycles:
+            wait = max(0, CYCLE_SECONDS - elapsed)
+            if wait > 0:
+                print(f"\n  Waiting {wait:.0f}s...")
+                time.sleep(wait)
+
+    print(f"\nDone. Best: {state['best_score']:.1f}%")
+
+
+if __name__ == "__main__":
+    main()

@@ -31,20 +31,30 @@
 
     <!-- Critical CSS inline preload -->
     <link rel="preload" href="styles/style.css?v=8" as="style">
-    <link rel="preload" href="ressources/Artillio.png" as="image">
+    <link rel="preload" href="ressources/Artillio-optimized.jpg" as="image" fetchpriority="high">
 
     <!-- Fonts with display swap -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Critical CSS inline for instant first paint -->
+    <style>
+      :root{--bg-darker:#0a0a0a;--primary-color:#4a90e2;--text-light:#fff;--nav-bg:rgba(0,0,0,.95)}
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{background:var(--bg-darker);color:var(--text-light);font-family:'Poppins',sans-serif;overflow-x:hidden}
+      .navbar{position:fixed;top:0;left:0;width:100%;z-index:1000;background:var(--nav-bg);padding:1rem 2rem}
+      .welcome-section{min-height:100vh;display:flex;align-items:center;position:relative}
+      .skip-link{position:absolute;top:-40px;left:0;background:var(--primary-color);color:#fff;padding:8px;z-index:9999}
+      .skip-link:focus{top:0}
+    </style>
     <!-- Stylesheets -->
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet"/>
-    <link href="styles/style.css?v=8" rel="stylesheet"/>
+    <link href="styles/style.css?v=9" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" media="print" onload="this.media='all'">
 
     <!-- Favicon -->
-    <link rel="icon" href="/ressources/logo.png" type="image/png">
-    <link rel="apple-touch-icon" href="/ressources/logo.png">
+    <link rel="icon" href="/ressources/logo-optimized.png" type="image/png">
+    <link rel="apple-touch-icon" href="/ressources/logo-optimized.png">
 
     <title>Artillio Yepmo | Ingénieur DevOps & Full-Stack - Portfolio 2025</title>
 </head>
@@ -93,7 +103,7 @@
                         <!-- Ligne de scan holographique -->
                         <div class="cyber-scan-line"></div>
                         <!-- Photo de profil -->
-                        <img src="ressources/Artillio.png" alt="Artillio Yepmo - Photo de profil d'ingénieur en informatique" class="profile-img">
+                        <img src="ressources/Artillio-optimized.jpg" alt="Artillio Yepmo - Photo de profil d'ingénieur en informatique" class="profile-img" width="440" height="566">
                     </div>
                 </div>
             </div>
@@ -186,7 +196,7 @@
             <div class="card-container mb-4">
                 <div class="card-flip">
                     <div class="card-front mb-4 shadow-sm depth-effect">
-                        <img alt="Application Angular et API REST" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/MeteoApp.png" loading="lazy" width="480" height="240" srcset="ressources/MeteoApp.png 1200w, ressources/MeteoApp.png 800w, ressources/MeteoApp.png 480w" sizes="(min-width: 992px) 33vw, (min-width: 768px) 50vw, 100vw"/>
+                        <img alt="Application Angular et API REST" class="card-img-top fade-in" data-aos="zoom-in" src="ressources/MeteoApp-optimized.jpg" loading="lazy" width="480" height="240" srcset="ressources/MeteoApp-optimized.jpg 800w, ressources/MeteoApp-optimized.jpg 480w" sizes="(min-width: 992px) 33vw, (min-width: 768px) 50vw, 100vw"/>
                         <div class="card-body">
                             <h4 class="fade-in">Application Angular & API REST</h4>
                             <div class="mt-auto text-center">
@@ -349,7 +359,7 @@
                 <div class="row">
                     <div class="col-lg-4 mb-4">
                         <div class="service-card">
-                            <img class="circular-img" alt="Automatisation CI/CD" data-aos="zoom-in" height="120" src="ressources/Automation.png" width="120"/>
+                            <img class="circular-img" alt="Automatisation CI/CD" data-aos="zoom-in" height="120" src="ressources/Automation.png" width="120" loading="lazy"/>
                             <h2 class="text-center fade-in" data-aos="fade-up">Automatisation CI/CD</h2>
                             <div class="framework-description depth-effect">
                                 <h6>Je conçois vos pipelines CI/CD (Jenkins, GitLab CI, GitHub Actions) pour accélérer vos cycles de livraison tout en renforçant la qualité et la sécurité de votre code.</h6>
@@ -361,7 +371,7 @@
                     </div>
                     <div class="col-lg-4 mb-4">
                         <div class="service-card">
-                            <img class="circular-img" alt="Infrastructure as Code" data-aos="zoom-in" height="140" src="ressources/infrastructure_as_code.jpg" width="140"/>
+                            <img class="circular-img" alt="Infrastructure as Code" data-aos="zoom-in" height="140" src="ressources/infrastructure_as_code.jpg" width="140" loading="lazy"/>
                             <h2 class="text-center fade-in" data-aos="fade-up">Infrastructure as Code</h2>
                             <div class="framework-description depth-effect">
                                 <h6>Je traduis vos infrastructures cloud (AWS, GCP) en code avec Terraform et Ansible pour des déploiements rapides, cohérents et une maîtrise optimisée des coûts.</h6>
@@ -377,7 +387,7 @@
                     
                     <div class="col-lg-4 mb-4">
                         <div class="service-card">
-                            <img class="circular-img" alt="Observabilité et Monitoring" data-aos="zoom-in" height="140" src="ressources/Monitoring.jpeg" width="140"/>
+                            <img class="circular-img" alt="Observabilité et Monitoring" data-aos="zoom-in" height="140" src="ressources/Monitoring.jpeg" width="140" loading="lazy"/>
                             <h2 class="text-center fade-in" data-aos="fade-up">Observabilité & Monitoring</h2>
                             <div class="framework-description depth-effect">
                                 <h6>Je mets en place des plateformes d'observabilité (Prometheus, Grafana, ELK) pour une détection proactive des anomalies et une analyse fine des performances de vos systèmes.</h6>
@@ -536,24 +546,26 @@
         <button id="back-to-top" class="back-to-top" aria-label="Retour en haut de page" title="Retour en haut">
             <i class="fas fa-chevron-up"></i>
         </button>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" defer></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" defer></script>
         
         <script type="module">
-            import { AdvancedAnimations } from './modules/advanced-animations.js?v=4';
+            // Defer stellar engine init to after first paint for faster FCP
+            function initAnimations() {
+                import('./modules/advanced-animations.js?v=5').then(({ AdvancedAnimations }) => {
+                    const animations = new AdvancedAnimations();
+                    // API disponible: window.stellarEngine
+                });
+            }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Initialisation du moteur stellaire avancé
-                const animations = new AdvancedAnimations();
-
-                // API disponible: window.stellarEngine
-                // - stellarEngine.triggerShootingStar() : déclenche une étoile filante
-                // - stellarEngine.setMouseInfluence(radius) : ajuste le rayon d'interaction
-                // - Double-clic n'importe où pour une étoile filante surprise!
-            });
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(initAnimations, { timeout: 2000 });
+            } else {
+                setTimeout(initAnimations, 100);
+            }
         </script>
-        <script src="modules/app.js"></script>
+        <script src="modules/app.js" defer></script>
         <script>
             // Ajout de la logique de rotation pour les cartes de projet
             const projectCards = document.querySelectorAll('.card');

@@ -54,16 +54,26 @@ export class StellarEngine {
     }
 
     init() {
+        // Respect user preference for reduced motion
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         this.createCanvas();
         this.createSVGFilters();
         this.createStars();
         if (this.config.enableNebulae) this.createNebulae();
         if (this.config.enableGeekConstellations) this.createGeekConstellations();
         this.bindEvents();
-        this.animate();
+
+        if (this.reducedMotion) {
+            // Draw a single static frame for reduced-motion users
+            this.time = performance.now();
+            this.draw();
+        } else {
+            this.animate();
+        }
         this.isInitialized = true;
 
-        if (this.config.enableShootingStars) {
+        if (this.config.enableShootingStars && !this.reducedMotion) {
             this.scheduleShootingStar();
         }
     }
@@ -467,6 +477,15 @@ export class StellarEngine {
             this.resize();
             if (this.config.enableGeekConstellations) {
                 this.createGeekConstellations();
+            }
+        });
+
+        // Pause animation when tab is hidden (save CPU/battery)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pause();
+            } else {
+                this.resume();
             }
         });
 

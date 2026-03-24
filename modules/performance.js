@@ -25,29 +25,11 @@ export class ResourceManager {
     }
 
     setupPerformanceMonitoring() {
-        if ('PerformanceObserver' in window) {
-            const observer = new PerformanceObserver((list) => {
-                list.getEntries().forEach((entry) => {
-                    if (entry.entryType === 'largest-contentful-paint') {
-                        // LCP tracked silently
-                    }
-                });
-            });
-
-            observer.observe({ entryTypes: ['largest-contentful-paint'] });
-        }
+        // PerformanceObserver réservé pour un usage futur avec métriques actives
     }
 
     optimizeEventListeners() {
-        // Optimisation du scroll
-        window.addEventListener('scroll', this.throttle(() => {
-            // Code de gestion du scroll optimisé
-        }, 50));
-
-        // Optimisation du resize
-        window.addEventListener('resize', this.debounce(() => {
-            // Code de gestion du redimensionnement optimisé
-        }, 250));
+        // Listeners réservés pour un usage futur
     }
 
     debounce(func, wait) {

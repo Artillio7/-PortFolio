@@ -18,8 +18,17 @@ export class AdvancedNavigation {
             });
         }
 
-        // Gestion du scroll
-        window.addEventListener('scroll', () => this.handleScroll());
+        // Gestion du scroll (throttled via rAF)
+        let scrollTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    this.handleScroll();
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
 
         // Gestion des liens
         this.links.forEach(link => {

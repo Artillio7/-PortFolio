@@ -47,6 +47,7 @@ export class StellarEngine {
         this.mouse = { x: -1000, y: -1000, vx: 0, vy: 0 };
         this.time = 0;
         this.animationId = null;
+        this.shootingStarTimeoutId = null;
         this.isInitialized = false;
         this.heroHeight = window.innerHeight;
 
@@ -95,6 +96,7 @@ export class StellarEngine {
         `;
         document.body.insertBefore(this.canvas, document.body.firstChild);
         this.ctx = this.canvas.getContext('2d');
+        if (!this.ctx) return;
         this.resize();
     }
 
@@ -466,10 +468,17 @@ export class StellarEngine {
 
     scheduleShootingStar() {
         const delay = this.config.shootingStarInterval + Math.random() * 4000;
-        setTimeout(() => {
+        this.shootingStarTimeoutId = setTimeout(() => {
             this.createShootingStar();
             this.scheduleShootingStar();
         }, delay);
+    }
+
+    stopShootingStarScheduler() {
+        if (this.shootingStarTimeoutId) {
+            clearTimeout(this.shootingStarTimeoutId);
+            this.shootingStarTimeoutId = null;
+        }
     }
 
     bindEvents() {
@@ -650,8 +659,14 @@ export class StellarEngine {
     }
 
     draw() {
-        this.ctx.fillStyle = 'rgba(8, 12, 17, 0.12)';
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        // Clear complet au premier frame après reprise pour éviter les traînées fantômes
+        if (this._resuming) {
+            this.ctx.clearRect(0, 0, this.width, this.height);
+            this._resuming = false;
+        } else {
+            this.ctx.fillStyle = 'rgba(8, 12, 17, 0.12)';
+            this.ctx.fillRect(0, 0, this.width, this.height);
+        }
 
         if (this.config.enableNebulae) this.drawNebulae();
         if (this.config.enableConstellations) this.drawConstellations();
@@ -919,11 +934,19 @@ export class StellarEngine {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
+        this.stopShootingStarScheduler();
     }
 
     resume() {
         if (!this.animationId) {
+            // Nettoyer l'état accumulé pendant l'inactivité
+            this.shootingStars = [];
+            this._resuming = true;
             this.animate();
+        }
+        // Relancer le scheduler d'étoiles filantes
+        if (this.config.enableShootingStars && !this.reducedMotion && !this.shootingStarTimeoutId) {
+            this.scheduleShootingStar();
         }
     }
 
@@ -948,6 +971,7 @@ export class StellarEngine {
 
     destroy() {
         this.pause();
+        this.stopShootingStarScheduler();
         if (this.canvas) this.canvas.remove();
         const filters = document.getElementById('stellar-filters');
         if (filters) filters.remove();

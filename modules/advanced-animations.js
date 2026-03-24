@@ -358,15 +358,30 @@ class WelcomeAnimator {
             particles.push(new Particle());
         }
 
+        let particleAnimationId = null;
+
         const animate = () => {
-            if (!this.enabled) return; // safety
+            if (!this.enabled) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(particle => {
                 particle.update();
                 particle.draw();
             });
-            requestAnimationFrame(animate);
+            particleAnimationId = requestAnimationFrame(animate);
         };
+
+        // Pause/resume quand l'onglet est masqué/visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (particleAnimationId) {
+                    cancelAnimationFrame(particleAnimationId);
+                    particleAnimationId = null;
+                }
+            } else if (this.enabled && !particleAnimationId) {
+                animate();
+            }
+        });
+
         animate();
     }
 

@@ -486,21 +486,6 @@ body.menu-open .content-blur {
     animation: gradient-shift 8s linear infinite;
 }
 
-
-
-    .typing-text {
-        font-size: clamp(0.85rem, 3.5vw, 1.3rem);
-        letter-spacing: 0.5px;
-        padding: 0.5rem 0.8rem;
-        margin: 0.5rem auto;
-        line-height: 1.4;
-        white-space: normal;
-        overflow: visible;
-        border-right: none;
-        animation: gradient-shift 8s linear infinite;
-    }
-}
-
 /* Media queries pour l'optimisation sur grands écrans */
 @media (min-width: 1200px) {
  
@@ -2492,18 +2477,22 @@ nav {
     }
 }
 
-/* Footer Style */
-footer {
-    margin-top: 20px; /* Space above the footer */
-    padding: 20px 0; /* Padding for the footer */
-    background-color: #1a1a1a; /* Match the dark theme */
-    position: relative; /* Ensure proper positioning */
+/* About section dividers */
+.about-divider-vertical {
+    background-color: white;
+    height: 200px;
+    width: 2px;
 }
-    
-    .cyber-profile {
-        width: 200px;
-        height: 200px;
-    }
+
+.about-divider-horizontal {
+    background-color: white;
+    height: 2px;
+}
+
+.contact-cta-spacer {
+    margin-top: 0;
+    margin-bottom: 150px;
+}
 
 /* Footer Style */
 footer {
@@ -2870,7 +2859,7 @@ footer {
   }
 }
 
- @media (max-width: 1900px) {
+ @media (max-width: 900px) {
    .cyber-box {
      padding: 1rem 0.5rem;
      margin-bottom: 1.5rem;
@@ -2879,10 +2868,10 @@ footer {
      box-sizing: border-box;
    }
    .glitch-container {
-     font-size: 2rem !important;
+     font-size: clamp(1.2rem, 5vw, 2rem);
    }
    .typing-text {
-     font-size: 1.1rem !important;
+     font-size: clamp(0.85rem, 3vw, 1.1rem);
      white-space: normal;
      text-align: center;
      padding: 0.4rem 0.6rem;
@@ -3591,5 +3580,130 @@ a:focus-visible {
   .contact-item,
   .card-container {
     transition: none !important;
+  }
+}
+
+/* === CTA Interstitial Sections === */
+.cta-interstitial {
+  position: relative;
+  z-index: 2;
+  padding: 60px 0;
+}
+
+.cta-interstitial-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-interstitial-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  text-shadow: 0 0 30px rgba(74, 144, 226, 0.2);
+}
+
+.cta-interstitial-text {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+@media (max-width: 767px) {
+  .cta-interstitial {
+    padding: 40px 0;
+  }
+
+  .cta-interstitial-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* === Service Problem/Solution Layout === */
+.service-problem,
+.service-solution {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.service-problem p,
+.service-solution p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 0;
+}
+
+.service-problem strong {
+  color: #e87c7c;
+}
+
+.service-solution strong {
+  color: #7ee8a8;
+}
+
+/* Service CTA Button */
+.btn-cta-service {
+  display: inline-block;
+  padding: 10px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.8) 0%, rgba(56, 116, 190, 0.9) 100%);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 50px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-cta-service:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+  border-color: rgba(74, 144, 226, 0.6);
+}
+
+/* === Trust / Confiance Section === */
+#trust {
+  position: relative;
+  z-index: 2;
+}
+
+.trust-card {
+  padding: 30px 20px;
+  background: rgba(11, 15, 21, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trust-card:hover {
+  border-color: rgba(74, 144, 226, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), 0 0 12px rgba(74, 144, 226, 0.08);
+}
+
+.trust-card i {
+  color: #7eb3ed;
+}
+
+.trust-card h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #e8eef5;
+  margin-bottom: 8px;
+}
+
+.trust-card p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .trust-card {
+    padding: 20px 15px;
   }
 }

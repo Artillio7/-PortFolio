@@ -86,13 +86,27 @@ export class ProfileAnimator {
     initFloatingEffect() {
         let startTime = performance.now();
         const animate = (currentTime) => {
+            if (document.hidden) {
+                this._rafId = requestAnimationFrame(animate);
+                return;
+            }
             const elapsed = currentTime - startTime;
             const yOffset = Math.sin(elapsed * this.frequency) * this.amplitude;
-            
+
             this.element.style.transform = `translateY(${this.baseY + yOffset}px)`;
-            requestAnimationFrame(animate);
+            this._rafId = requestAnimationFrame(animate);
         };
-        requestAnimationFrame(animate);
+        this._rafId = requestAnimationFrame(animate);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this._rafId) {
+                cancelAnimationFrame(this._rafId);
+                this._rafId = null;
+            } else if (!document.hidden && !this._rafId) {
+                startTime = performance.now();
+                this._rafId = requestAnimationFrame(animate);
+            }
+        });
     }
 
     addHoverEffect() {
@@ -147,11 +161,18 @@ export class ScrollManager {
         progressBar.className = 'scroll-progress';
         document.body.appendChild(progressBar);
 
+        let scrollTicking = false;
         window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            progressBar.style.width = scrolled + '%';
-        });
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = (winScroll / height) * 100;
+                    progressBar.style.width = scrolled + '%';
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
     }
 }

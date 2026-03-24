@@ -14,12 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.setAttribute('aria-label', 'Ouvrir le menu');
     }
 
+    if (!hamburger || !navMenu) return;
+
     function openMenu() {
         menuOpen = true;
         hamburger.classList.add('active');
         navMenu.classList.add('active');
         body.style.overflow = 'hidden';
-        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.setAttribute('aria-expanded', 'true');
     }
 
     function closeMenu() {
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
         body.style.overflow = '';
-        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-expanded', 'false');
     }
 
     // Event listener pour le hamburger - un seul clic
@@ -150,14 +152,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Navbar Scroll Effect
-window.addEventListener('scroll', () => {
+(function initNavbarScroll() {
     const nav = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-});
+    if (!nav) return;
+    let navTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!navTicking) {
+            requestAnimationFrame(() => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                navTicking = false;
+            });
+            navTicking = true;
+        }
+    }, { passive: true });
+})();
 
 const descriptionButtons = document.querySelectorAll('[data-toggle="modal"]');
 descriptionButtons.forEach((button) => {
@@ -217,8 +229,6 @@ new ResizeObserver((entries) => {
 
     if (!cyberProfile || !profileImg) return;
 
-    // Variables pour le tracking souris
-    let mouseX = 0, mouseY = 0;
     let profileRect = cyberProfile.getBoundingClientRect();
     let isHovering = false;
 
@@ -355,22 +365,6 @@ new ResizeObserver((entries) => {
         profileRect = cyberProfile.getBoundingClientRect();
     });
 })();
-
-// Smooth scroll
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-
-        if (targetSection) {
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
 
 // Back to top button
 (function initBackToTop() {

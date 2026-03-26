@@ -2033,6 +2033,8 @@ nav {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
+    width: max-content;
+    max-width: 0;
     border-right: 2px solid #4a90e2;
     animation: typing 3.5s steps(30, end) forwards,
                blink-caret 0.75s step-end infinite,
@@ -2196,10 +2198,10 @@ nav {
 
 @keyframes typing { /* Animation d'écriture progressive */
     from {
-        width: 0;
+        max-width: 0;
     }
     to {
-        width: 100%;
+        max-width: 50ch;
     }
 }
 
@@ -2226,8 +2228,8 @@ nav {
 
 .cyber-profile {
     position: relative;
-    width: 320px;
-    height: 320px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -2415,10 +2417,10 @@ nav {
 
 @keyframes particle-orbit {
     from {
-        transform: rotate(0deg) translateX(170px) rotate(0deg);
+        transform: rotate(0deg) translateX(120px) rotate(0deg);
     }
     to {
-        transform: rotate(360deg) translateX(170px) rotate(-360deg);
+        transform: rotate(360deg) translateX(120px) rotate(-360deg);
     }
 }
 
@@ -2452,8 +2454,8 @@ nav {
     }
 
     .cyber-profile {
-        width: 250px;
-        height: 250px;
+        width: 180px;
+        height: 180px;
     }
 
     .cyber-profile .orbital-particle {
@@ -2462,18 +2464,18 @@ nav {
 
     @keyframes particle-orbit-mobile {
         from {
-            transform: rotate(0deg) translateX(135px) rotate(0deg);
+            transform: rotate(0deg) translateX(100px) rotate(0deg);
         }
         to {
-            transform: rotate(360deg) translateX(135px) rotate(-360deg);
+            transform: rotate(360deg) translateX(100px) rotate(-360deg);
         }
     }
 }
 
 @media (max-width: 600px) {
     .cyber-profile {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
     }
 }
 

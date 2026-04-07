@@ -22,7 +22,7 @@ export class AdvancedAnimations {
             constellationDistance: 80,          // Distance pour connecter les étoiles
             mouseInfluenceRadius: 150,         // Rayon d'interaction souris
             enableConstellations: !isMobile,   // Désactivé sur mobile (GPU)
-            enableShootingStars: true,         // Étoiles filantes
+            enableShootingStars: false,        // Étoiles filantes désactivées
             enableNebulae: !isMobile,          // Désactivé sur mobile (GPU)
             enableMouseInteraction: !isMobile, // Pas de souris sur mobile
             enableGeekConstellations: !isMobile, // EASTER EGG: Desktop uniquement
@@ -39,12 +39,7 @@ export class AdvancedAnimations {
         // Exposer l'API pour interactions externes
         window.stellarEngine = this.stellarEngine;
 
-        // Easter egg: Double-clic déclenche une étoile filante
-        document.addEventListener('dblclick', () => {
-            if (this.stellarEngine) {
-                this.stellarEngine.triggerShootingStar();
-            }
-        });
+        // Easter egg: Double-clic (étoiles filantes désactivées)
     }
 
 

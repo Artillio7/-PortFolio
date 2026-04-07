@@ -264,10 +264,6 @@ new ResizeObserver((entries) => {
         isHovering = true;
         profileRect = cyberProfile.getBoundingClientRect();
 
-        // Déclencher une étoile filante (si disponible)
-        if (window.stellarEngine) {
-            window.stellarEngine.triggerShootingStar();
-        }
     });
 
     cyberProfile.addEventListener('mousemove', (e) => {
@@ -330,11 +326,6 @@ new ResizeObserver((entries) => {
 
         setTimeout(() => shockwave.remove(), 800);
 
-        // Déclencher plusieurs étoiles filantes
-        if (window.stellarEngine) {
-            window.stellarEngine.triggerShootingStar();
-            setTimeout(() => window.stellarEngine.triggerShootingStar(), 200);
-        }
 
         cyberProfile.style.animation = 'profile-float 6s ease-in-out infinite';
     });
